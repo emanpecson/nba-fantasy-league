@@ -9,17 +9,17 @@ export default function Signup() {
 	const [verifyPassword, setVerifyPassword] = useState('');
 	const [isValid, setIsValid] = useState(false);
 
-	const handleEmailChange = (event) => {
+	const handleEmailChange = (event: React.ChangeEvent) => {
 		setEmail(event.target.value);
 		setIsValid(event.target.value && password && verifyPassword && (password == verifyPassword));
 	}
 
-	const handlePasswordChange = (event) => {
+	const handlePasswordChange = (event: React.ChangeEvent) => {
 		setPassword(event.target.value);
 		setIsValid(email && event.target.value && verifyPassword && (event.target.value == verifyPassword));
 	}
 
-	const handleVerifyPasswordChange = (event) => {
+	const handleVerifyPasswordChange = (event: React.ChangeEvent) => {
 		setVerifyPassword(event.target.value);
 		setIsValid(email && password && event.target.value && (password == event.target.value));
 	}

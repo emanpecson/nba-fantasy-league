@@ -1,6 +1,6 @@
 import FormData from 'form-data';
 
-export async function verifyUser(event) { // event: React.ChangeEvent or React.FormEvent
+export async function verifyUser(event: React.FormEvent) { // event: React.ChangeEvent or React.FormEvent
 	event.preventDefault();
 	const formData = new FormData(event.target);
 

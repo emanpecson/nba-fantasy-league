@@ -1,4 +1,4 @@
-'use client';
+'use client'; // look more into this + 'use server'
 
 import React, { useState } from 'react';
 import { verifyUser } from '@/lib/user/verifyUser';
@@ -11,17 +11,17 @@ export default function Login() {
 	const [isValid, setIsValid] = useState(false);
 	const router = useRouter();
 
-	const handleEmailChange = (event) => {
+	const handleEmailChange = (event: React.ChangeEvent) => {
 		setEmail(event.target.value);
 		setIsValid(event.target.value && password)
 	}
 
-	const handlePasswordChange = (event) => {
+	const handlePasswordChange = (event: React.ChangeEvent) => {
 		setPassword(event.target.value);
 		setIsValid(email && event.target.value);
 	}
 
-	const handleLogin = async (event) => {
+	const handleLogin = async (event: React.FormEvent) => {
 		event.preventDefault();
 		const userId: string = await verifyUser(event);
 
