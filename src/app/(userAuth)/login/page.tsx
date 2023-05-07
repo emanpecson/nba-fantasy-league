@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { handleLogin } from '@/app/lib/user/handleLogin';
+import { handleLogin } from '@/lib/user/handleLogin';
 
 // then when doing the id, it'll be an arg in params: export default function test({ params })
 export default function Login() {

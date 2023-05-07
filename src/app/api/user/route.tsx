@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/app/lib/db/connect";
+import clientPromise from "@/lib/db/connect";
 
 const dbName = String(process.env.DB_NAME);
 const collectionName = String(process.env.COLLECTION_NAME);

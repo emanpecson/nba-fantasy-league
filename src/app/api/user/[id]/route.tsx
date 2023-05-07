@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/app/lib/db/connect";
+import clientPromise from "@/lib/db/connect";
 import { ObjectId } from "mongodb";
 
 const dbName = String(process.env.DB_NAME);

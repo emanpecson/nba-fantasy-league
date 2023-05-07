@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { handleSignup } from '@/app/lib/user/handleSignup';
+import { handleSignup } from '@/lib/user/handleSignup';
 
 export default function Signup() {
 	const [email, setEmail] = useState('');
