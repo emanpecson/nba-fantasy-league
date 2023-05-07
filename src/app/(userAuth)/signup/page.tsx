@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { createUser } from '@/lib/user/createUser';
+import Link from 'next/link';
 
 export default function Signup() {
 	const [email, setEmail] = useState('');
@@ -63,6 +64,8 @@ export default function Signup() {
 					Create account
 				</button>
 			</form>
+
+			<Link href="../">Back</Link>
 		</div>
 	)
 }

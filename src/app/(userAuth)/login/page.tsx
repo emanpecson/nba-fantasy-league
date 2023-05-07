@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { verifyUser } from '@/lib/user/verifyUser';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 // then when doing the id, it'll be an arg in params: export default function test({ params })
 export default function Login() {
@@ -64,6 +65,8 @@ export default function Login() {
 				</button>
 
 			</form>
+
+			<Link href="../">Back</Link>
 		</div>
 	)
 }

@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div>
+    <div className="box">
 		<div>
 			<Link href='/login'>
 				go to login page
