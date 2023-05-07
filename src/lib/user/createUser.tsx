@@ -1,6 +1,6 @@
 import FormData from 'form-data';
 
-export async function handleSignup(event) {
+export async function createUser(event) {
 	event.preventDefault();
 	const formData = new FormData(event.target);
   

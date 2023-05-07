@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { handleSignup } from '@/lib/user/handleSignup';
+import { createUser } from '@/lib/user/createUser';
 
 export default function Signup() {
 	const [email, setEmail] = useState('');
@@ -28,7 +28,7 @@ export default function Signup() {
 		<div>
 			<h1>Create an account!</h1>
 
-			<form onSubmit={handleSignup}>
+			<form onSubmit={createUser}>
 				<label>E-mail:</label>
 				<input 
 					type="email" 

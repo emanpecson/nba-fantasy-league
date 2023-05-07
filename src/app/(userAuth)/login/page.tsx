@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { handleLogin } from '@/lib/user/handleLogin';
+import { verifyUser } from '@/lib/user/verifyUser';
+import { useRouter } from 'next/navigation';
 
 // then when doing the id, it'll be an arg in params: export default function test({ params })
 export default function Login() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isValid, setIsValid] = useState(false);
+	const router = useRouter();
 
 	const handleEmailChange = (event) => {
 		setEmail(event.target.value);
@@ -17,6 +19,18 @@ export default function Login() {
 	const handlePasswordChange = (event) => {
 		setPassword(event.target.value);
 		setIsValid(email && event.target.value);
+	}
+
+	const handleLogin = async (event) => {
+		event.preventDefault();
+		const userId: string = await verifyUser(event);
+
+		console.log('userId:', userId);
+
+		if(userId)
+			router.push('../' + userId + '/menu');
+		else
+			console.log('Error');
 	}
 
 	return(
