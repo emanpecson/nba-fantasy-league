@@ -1,34 +1,7 @@
 'use client';
 
-import FormData from 'form-data';
 import React, { useState } from 'react';
-
-export async function handleSubmit(event) {
-	event.preventDefault();
-	const formData = new FormData(event.target);
-
-	try {
-		const response = await fetch('../../api/user', {
-			method: 'GET'
-		});
-
-		const { key, users } = await response.json();
-
-		console.log('Success:', users);
-
-		for(let user of users) {
-			if(user.email == formData.get('email') && user.password == formData.get('password')) {
-				console.log('user found');
-
-				return;
-			}
-		}
-		console.log('user not found');
-	}
-	catch(error) {
-		console.error('Error retrieving data', error);
-	}
-}
+import { handleLogin } from '@/app/lib/user/handleLogin';
 
 // then when doing the id, it'll be an arg in params: export default function test({ params })
 export default function Login() {
@@ -50,8 +23,7 @@ export default function Login() {
 		<div>
 			<h1>Login to your account!</h1>
 
-			<form onSubmit={handleSubmit}>
-			{/* <form> */}
+			<form onSubmit={handleLogin}>
 				<label>Email:</label>
 				<input 
 					type="email"
