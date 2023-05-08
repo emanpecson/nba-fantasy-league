@@ -1,5 +1,7 @@
+import { cache } from 'react';
 
-export async function getUsers() {
+// cache to reduce latency on consecutive requests to api
+export const getUsers = cache(async () => {
 	try {
 		const response = await fetch('../../api/user', {
 			method: 'GET'
@@ -10,4 +12,4 @@ export async function getUsers() {
 		console.error('Error getting user:', error);
 		return error;
 	}
-}
+});
