@@ -1,15 +1,13 @@
 import FormData from 'form-data';
+import { getUsers } from './getUsers';
 
-export async function verifyUser(event: React.FormEvent) { // event: React.ChangeEvent or React.FormEvent
+// look into caching 
+export async function verifyUser(event: React.FormEvent) {
 	event.preventDefault();
 	const formData = new FormData(event.target);
 
 	try {
-		const response = await fetch('../../api/user', {
-			method: 'GET'
-		});
-
-		const { key, users } = await response.json();
+		const { key, users } = await getUsers();
 
 		console.log('Success:', users);
 
@@ -20,11 +18,11 @@ export async function verifyUser(event: React.FormEvent) { // event: React.Chang
 				return user._id;
 			}
 		}
-		console.log('Error: User not in database');
+		console.log('User not in database');
 		return null;
 	}
 	catch(error) {
-		console.error('Error', error);
+		console.error('Error:', error);
 		return null;
 	}
 }

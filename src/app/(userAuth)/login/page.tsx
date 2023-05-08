@@ -24,14 +24,14 @@ export default function Login() {
 
 	const handleLogin = async (event: React.FormEvent) => {
 		event.preventDefault();
-		const userId: string = await verifyUser(event);
+		const userId: string = await verifyUser(event);	// can cache this func b/c we're fetching the same login info
 
 		console.log('userId:', userId);
 
 		if(userId)
-			router.push('../' + userId + '/menu');
+			router.push(`../${userId}/menu`);
 		else
-			console.log('Error');
+			console.log('Invalid credentials');
 	}
 
 	return(
