@@ -1,4 +1,6 @@
-export async function getUserById(id: string) {
+import { cache } from 'react';
+
+export const getUserById = cache(async (id: string) => {
 	try {
 		const response = await fetch(`../../api/user/${id}`, {
 			method: 'GET'
@@ -9,4 +11,4 @@ export async function getUserById(id: string) {
 		console.error('Error getting user:', error);
 		return error;
 	}
-}
+});
