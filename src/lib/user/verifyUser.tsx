@@ -3,7 +3,7 @@ import { getUsers } from './getUsers';
 
 // look into caching 
 export async function verifyUser(event: React.FormEvent) {
-	event.preventDefault();
+	// event.preventDefault();
 	const formData = new FormData(event.target);
 
 	try {
