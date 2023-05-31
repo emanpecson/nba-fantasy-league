@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/db/connect";
 import { ObjectId } from "mongodb";
 
-const dbName = String(process.env.DB_NAME);
-const collectionName = String(process.env.COLLECTION_NAME);
+const dbName = String(process.env.DB_NAME); // should this be something i hide?
+// const collectionName = String(process.env.COLLECTION_NAME);
+const collectionName = 'users';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
 

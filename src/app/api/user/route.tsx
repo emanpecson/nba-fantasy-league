@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/db/connect";
 
 const dbName = String(process.env.DB_NAME);
-const collectionName = String(process.env.COLLECTION_NAME);
+// const collectionName = String(process.env.COLLECTION_NAME);
+const collectionName = 'users';
 
 export async function GET(request: NextRequest) {
 
