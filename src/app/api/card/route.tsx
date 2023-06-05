@@ -34,3 +34,20 @@ export async function POST(request: NextRequest) {
 		console.error('Error:', error);
 	}
 }
+
+// may need some typa security arg to prevent delete access from public
+export async function DELETE() {
+	try {
+		const client = await clientPromise;
+		const db = client.db(dbName);
+
+		const res = await db.collection(collectionName).deleteMany({});
+
+		console.log('Success:', res); 
+		return NextResponse.json(null, { status: 200 }) // correct status code? 204?
+	}
+	catch(error) {
+		console.error('Error:', error);
+		return NextResponse.json('Server Error', { status: 500 })
+	}
+}
