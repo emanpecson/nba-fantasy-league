@@ -4,7 +4,7 @@ import clientPromise from "@/lib/db/connect";
 const dbName = String(process.env.DB_NAME);
 const collectionName = 'cards';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
 	try {
 		const client = await clientPromise;
 		const db = client.db(dbName);
