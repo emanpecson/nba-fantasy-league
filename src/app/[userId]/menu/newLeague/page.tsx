@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 
 // the configs are contingent to whether the user selects:
 // fantasy or simulation mode
-export default function newLeague() {
-	// const [mode, setMode] = useState('');
+export default function NewLeague() {
 	const [ftsyMode, setFtsyMode] = useState(false);
 	const [simMode, setSimMode] = useState(false);
 
