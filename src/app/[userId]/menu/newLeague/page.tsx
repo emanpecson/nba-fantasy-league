@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 
 // the configs are contingent to whether the user selects:
 // fantasy or simulation mode
 export default function NewLeague() {
 	const [ftsyMode, setFtsyMode] = useState(false);
 	const [simMode, setSimMode] = useState(false);
+	const router = useRouter();
+	const params = useParams();
 
 	const showFtsyConfigs = () => {
 		setFtsyMode(true);
@@ -16,6 +19,11 @@ export default function NewLeague() {
 	const showSimConfigs = () => {
 		setSimMode(true);
 		setFtsyMode(false);
+	}
+
+	function handleButton() {
+		console.log('routing...');
+		router.push(`${params.userId}/draft`);
 	}
 
 	return(
@@ -40,6 +48,10 @@ export default function NewLeague() {
 			{ simMode && (
 				"sim mode"
 			) }
+
+			<button onClick={handleButton}>
+				temp draft route
+			</button>
 		</div>
 	)
 }
