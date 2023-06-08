@@ -29,7 +29,7 @@ export default function Login() {
 		console.log('userId:', userId);
 
 		if(userId)
-			router.push(`../${userId}/menu`);
+			router.push(`/${userId}/menu`);
 		else
 			console.log('Invalid credentials');
 	}
