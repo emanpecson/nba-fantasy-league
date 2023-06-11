@@ -1,53 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/db/connect";
+import { PrismaClient } from "@prisma/client";
 
-const dbName = String(process.env.DB_NAME);
-const collectionName = 'cards';
+const prisma = new PrismaClient();
 
 export async function GET() {
 	try {
-		const client = await clientPromise;
-		const db = client.db(dbName);
-		const cards = await db.collection(collectionName).find({}).toArray();
+		const cards = await prisma.card.findMany({});
 
 		console.log('Success:', cards);
 		return NextResponse.json({ cards }, { status: 200 });
 	}
 	catch(error) {
 		console.error('Error:', error);
+		return NextResponse.json('Server Error', { status: 500 });
 	}
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
 	try {
-		const client = await clientPromise;
-		const db = client.db(dbName);
+		const cards: object[] = await req.json();
+		console.log(cards);
+		const createdCards = await prisma.card.createMany({
+			data: cards,
+		})
 
-		const data: Array<Object> = await request.json();
-		console.log(data);
-		const card = await db.collection(collectionName).insertMany(data);
-
-		console.log('Success:', card);
-		return NextResponse.json({ card }, { status: 200 });
+		console.log('Success:', createdCards);
+		return NextResponse.json({ createdCards }, { status: 200 });
 	}
 	catch(error) {
 		console.error('Error:', error);
+		return NextResponse.json('Server Error', { status: 500 });
 	}
 }
 
 // may need some typa security arg to prevent delete access from public
 export async function DELETE() {
 	try {
-		const client = await clientPromise;
-		const db = client.db(dbName);
-
-		const res = await db.collection(collectionName).deleteMany({});
+		const res = await prisma.card.deleteMany({})
 
 		console.log('Success:', res); 
 		return NextResponse.json(null, { status: 200 }) // correct status code? 204?
 	}
 	catch(error) {
 		console.error('Error:', error);
-		return NextResponse.json('Server Error', { status: 500 })
+		return NextResponse.json('Server Error', { status: 500 });
 	}
 }

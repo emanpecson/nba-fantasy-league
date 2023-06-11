@@ -1,5 +1,6 @@
 import FormData from 'form-data';
 import { getUsers } from './getUsers';
+import { User } from '@prisma/client';
 
 // look into caching 
 export async function verifyUser(event: React.FormEvent) {
@@ -15,7 +16,7 @@ export async function verifyUser(event: React.FormEvent) {
 			if(user.email == formData.get('email') && user.password == formData.get('password')) {
 				console.log('User found:', user);
 
-				return user._id;
+				return user.id;
 			}
 		}
 		console.log('User not in database');
