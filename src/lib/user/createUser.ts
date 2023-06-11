@@ -5,7 +5,7 @@ export async function createUser(event) {
 	const formData = new FormData(event.target);
   
 	try {
-		const response = await fetch('../../api/user', {
+		const res = await fetch('../../api/user', {
 			method: 'POST',
 			body: JSON.stringify({
 				email: formData.get('email'),
@@ -13,10 +13,8 @@ export async function createUser(event) {
 			})
 		});
 
-		const { key, user } = await response.json();
-		console.log(response.json());
-
-		console.log('Success', user);
+		const createdUser = await res.json();
+		console.log('Success:', createdUser);
 	}
 	catch(error) {
 		console.error('Error:', error);

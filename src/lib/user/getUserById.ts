@@ -1,7 +1,10 @@
 export async function getUserById(id: string) {
 	try {
-		const response = await fetch(`../../api/user/${id}`, {
-			method: 'GET'
+		const response = await fetch(`../../api/user/`, {
+			method: 'GET',
+			body: JSON.stringify({
+				id,
+			})
 		});
 		return response.json();	// return body
 	}
