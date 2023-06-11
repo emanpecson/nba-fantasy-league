@@ -6,7 +6,7 @@ export async function getUserById(id: string) {
 				id,
 			})
 		});
-		return response.json();	// return body
+		return response.json();
 	}
 	catch(error) {
 		console.error('Error getting user:', error);

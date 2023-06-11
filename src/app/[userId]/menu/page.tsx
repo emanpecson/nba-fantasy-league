@@ -1,35 +1,29 @@
 'use client';
 
-import Modal from "./components/modal";
+import Modal from '@/components/modal';
 import LoadLeague from "./loadLeague/page";
 import NewLeague from "./newLeague/page";
 import { useState } from "react";
 
 export default function Menu() {
-	const [isOpenNewLeagueModal, setIsOpenNewLeagueModal] = useState(false);
-	const [isOpenLoadLeagueModal, setIsOpenLoadLeagueModal] = useState(false);
-
-	const openNewLeagueModal = () => { setIsOpenNewLeagueModal(true); }
-	const closeNewLeagueModal = () => { setIsOpenNewLeagueModal(false); }
-
-	const openLoadLeagueModal = () => { setIsOpenLoadLeagueModal(true); }
-	const closeLoadLeagueModal = () => { setIsOpenLoadLeagueModal(false); }
+	const [isOpenNL, setIsOpenNL] = useState(false);
+	const [isOpenLL, setIsOpenLL] = useState(false);
 
 	return (
 		<div>
 			<div>
-				<button onClick={openLoadLeagueModal}>
+				<button onClick={setIsOpenLL(true)}>
 					Open Load League
 				</button>
-				<Modal isOpen={isOpenLoadLeagueModal} onClose={closeLoadLeagueModal}>
+				<Modal isOpen={isOpenLL} onClose={setIsOpenLL(false)}>
 					<LoadLeague />
 				</Modal>
 			</div>
 			<div>
-				<button onClick={openNewLeagueModal}>
+				<button onClick={setIsOpenNL(true)}>
 					Open New League 
 				</button>
-				<Modal isOpen={isOpenNewLeagueModal} onClose={closeNewLeagueModal}>
+				<Modal isOpen={isOpenNL} onClose={setIsOpenNL(true)}>
 					<NewLeague />
 				</Modal>
 			</div>

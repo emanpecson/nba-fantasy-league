@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,7 @@ export async function GET() {
 	}
 	catch(error) {
 		console.error('Error:', error);
-		return NextResponse.json('Server Error', { status: 500 });
+		return NextResponse.json(null, { status: 500 });
 	}
 }
 
@@ -31,6 +31,6 @@ export async function POST(req: NextRequest) {
 	}
 	catch(error) {
 		console.error('Error:', error);
-		return NextResponse.json('Server Error', { status: 500 });
+		return NextResponse.json(null, { status: 500 });
 	}
 }
