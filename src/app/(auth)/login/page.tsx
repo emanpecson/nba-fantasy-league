@@ -1,6 +1,7 @@
 'use client';
 
-import LoginPrompt from '@/components/LoginPrompt';
+import RouteButton from '@/components/RouteButton';
+import LoginPrompt from '@/components/auth/LoginPrompt';
 import { verifyUser } from '@/lib/user/verifyUser';
 import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
@@ -23,6 +24,9 @@ export default function Login() {
 	return(
 		<div>
 			<LoginPrompt login={login} />
+			<RouteButton route={'/'}>
+				Cancel
+			</RouteButton>
 		</div>
 	)
 }

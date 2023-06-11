@@ -1,4 +1,4 @@
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 export default function LoginPrompt({ login }: { login: React.FC }) {
 	const { register, handleSubmit } = useForm();

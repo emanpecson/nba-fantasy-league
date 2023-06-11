@@ -1,18 +1,17 @@
-import Link from 'next/link';
-
+import RouteButton from '@/components/RouteButton';
 
 export default function Home() {
 	return (
 		<div>
 			<div>
-				<Link href='/login'>
+				<RouteButton route='/login'>
 					Login
-				</Link>
+				</RouteButton>
 			</div>
 			<div>
-				<Link href='/signup'>
+				<RouteButton route='/signup'>
 					Signup
-				</Link>
+				</RouteButton>
 			</div>
 		</div>
 	)
