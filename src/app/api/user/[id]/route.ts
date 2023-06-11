@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/db/connect";
-import { ObjectId } from "mongodb";
+import { PrismaClient } from "@prisma/client";
 
-const dbName = String(process.env.DB_NAME); // should this be something i hide?
-// const collectionName = String(process.env.COLLECTION_NAME);
-const collectionName = 'users';
+const prisma = new PrismaClient();
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-
+export async function GET(req: NextRequest) {
 	try {
-		const client = await clientPromise;
-		const userId: string = params.id;
-		const db = client.db(dbName);
-		const user = await db.collection(collectionName).findOne({
-			_id: new ObjectId(userId)
-		});
+		const { id } = await req.json();
+
+		const user = await prisma.user.findUnique({
+			where: {
+				id,
+			}
+		})
 
 		console.log('Success:', user);
 		return NextResponse.json({ user }, { status: 200 });
 	}
 	catch(error) {
 		console.error('Error:', error);
+		return NextResponse.json('Server Error', { status: 500 });
 	}
 }
-
