@@ -1,11 +1,10 @@
-'use client'; // look more into this + 'use server'
+'use client';
 
 import React, { useState } from 'react';
 import { verifyUser } from '@/lib/user/verifyUser';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-// then when doing the id, it'll be an arg in params: export default function test({ params })
 export default function Login() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -24,7 +23,7 @@ export default function Login() {
 
 	const handleLogin = async (event: React.FormEvent) => {
 		event.preventDefault();
-		const userId: string = await verifyUser(event);	// can cache this func b/c we're fetching the same login info
+		const userId: string = await verifyUser(event);	
 
 		console.log('userId:', userId);
 

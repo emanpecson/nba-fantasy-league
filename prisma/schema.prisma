@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+//---------------------------------------------------------------------------//
+
+model Card {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  age           Int
+  team          String
+  height        String
+  weight        String
+  position      String
+  country       String
+  lastAttended String
+  fantasyPpg      Float
+  ppg           Float
+  apg           Float
+  rpg           Float
+  spg           Float
+  bpg           Float
+  tpg           Float
+  mpg           Float
+  fgPct        Float
+  fg3Pct       Float
+  ftPct        Float
+}
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String
+  password String
+}
