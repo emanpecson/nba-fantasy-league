@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export default function CommonButton({ text, func }: { text: string }) {
+export default function CommonButton({ text, func }: { text: string, func: React.FC }) {
 	const router = useRouter();
 
 	return (
