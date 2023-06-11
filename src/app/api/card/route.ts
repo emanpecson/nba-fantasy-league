@@ -7,12 +7,12 @@ export async function GET() {
 	try {
 		const cards = await prisma.card.findMany({});
 
-		console.log('Success:', cards);
+		console.log('got cards');
 		return NextResponse.json({ cards }, { status: 200 });
 	}
 	catch(error) {
 		console.error('Error:', error);
-		return NextResponse.json('Server Error', { status: 500 });
+		return NextResponse.json(null, { status: 500 });
 	}
 }
 
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 	}
 	catch(error) {
 		console.error('Error:', error);
-		return NextResponse.json('Server Error', { status: 500 });
+		return NextResponse.json(null, { status: 500 });
 	}
 }
 
