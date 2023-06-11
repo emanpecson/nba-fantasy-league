@@ -8,6 +8,10 @@ export default function PlayerTable() {
 	const [players, setPlayers] = useState<Player>([]);
 	const [searchInput, setSearchInput] = useState('');
 
+	function filterSearch(ev: React.ChangeEvent) {
+		setSearchInput((ev.target as HTMLInputElement).value);
+	}
+
 	// http://localhost:3000/647d06d5b25f3d8c887d4169/draft
 	useEffect(() => {
 		const getPlayers = async () => {
@@ -19,6 +23,12 @@ export default function PlayerTable() {
 
 	return (
 		<div className="bg-gray-900 mx-auto max-w-7x1 bg-gray-900 py-10 px-4 sm:px-6 lg:px-8 sm:flex sm:items-center sm_flex-auto">
+			<div>
+				<label htmlFor="searchInput">Search Player:</label>
+				<input type="text" onChange={filterSearch} value={searchInput} />
+				{ searchInput }
+			</div>
+
 			<table className="min-w-full divide-y divide-gray-700">
 				<thead>
 					<tr>
