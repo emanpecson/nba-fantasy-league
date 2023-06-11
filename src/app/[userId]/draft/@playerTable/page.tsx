@@ -44,25 +44,25 @@ export default function PlayerTable() {
 				</thead>
 				<tbody className="divide-y divide-gray-800">
 					{ players.map((player: Player) => (
-						<tr key={player._id}>
+						<tr key={player.id}>
 							<td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">{player.name}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.ftsy_pts}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.pts}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.ast}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.reb}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.fg_pct}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.fg3_pct}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.ft_pct}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.stl}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.blk}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.tov}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.min}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.fantasyPpg}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.ppg}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.apg}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.rpg}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.fgPct}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.fg3Pct}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.ftPct}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.spg}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.bpg}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.tpg}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.mpg}</td>
 							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.age}</td>
 							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.team}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.pos}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.position}</td>
 							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.height}</td>
 							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.weight}</td>
-							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.last_attended}</td>
+							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.lastAttended}</td>
 							<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">{player.country}</td>
 						</tr>
 					))}
