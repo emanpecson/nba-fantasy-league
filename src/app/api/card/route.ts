@@ -1,14 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { Card, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(req: NextRequest) {
 	try {
-		const cards = await prisma.card.findMany({});
+		const query = {
+			searchBy: req.nextUrl.searchParams.get('searchBy'),
+			searchInput: req.nextUrl.searchParams.get('searchInput'),
+			position: req.nextUrl.searchParams.get('position'),
+		}
+		console.log('query:', query);
 
-		console.log('got cards');
-		return NextResponse.json({ cards }, { status: 200 });
+		// get cards by search filter
+		if(query.searchBy && query.searchInput) {
+			if(query.searchBy === 'name') {
+				const cards = await prisma.card.findMany({
+					where: { name: { contains: query.searchInput } },
+				});
+
+				return NextResponse.json({ cards }, { status: 200 });
+			}
+			else if(query.searchBy === 'team') {
+				const cards = await prisma.card.findMany({
+					where: { team: { startsWith: query.searchInput } },
+				});
+
+				return NextResponse.json({ cards }, { status: 200 });
+			}
+		}
+
+		// get cards by position
+		else if(query.position) {
+			const cards = await prisma.card.findMany({
+				where: { position: query.position },
+			});
+
+			return NextResponse.json({ cards }, { status: 200 });
+		}
+		
+		// get all cards
+		else {
+			const cards = await prisma.card.findMany({});
+	
+			console.log('got cards');
+			return NextResponse.json({ cards }, { status: 200 });
+		}
 	}
 	catch(error) {
 		console.error('Error:', error);
@@ -18,7 +55,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
 	try {
-		const cards: object[] = await req.json();
+		const cards: Card[] = await req.json();
 		console.log(cards);
 		const createdCards = await prisma.card.createMany({
 			data: cards,
