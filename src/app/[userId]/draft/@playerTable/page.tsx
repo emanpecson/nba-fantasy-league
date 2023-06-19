@@ -4,10 +4,6 @@ import { useEffect, useState } from 'react';
 import Player from '@/models/player';
 // import { Card } from '@prisma/client';
 
-interface Response {
-	cards: Player[];
-}
-
 export default function PlayerTable() {
 	const [searchInput, setSearchInput] = useState('');
 	const [players, setPlayers] = useState<Player>([]);
@@ -15,7 +11,8 @@ export default function PlayerTable() {
 
 	async function search(searchBy: string, searchInput: string) {
 		const res = await fetch(`/api/card?searchBy=${searchBy}&searchInput=${searchInput}`, { method: 'GET' });
-		const cards = (await res.json() as Response).cards;
+		// const cards = (await res.json() as Response).cards;
+		const { cards } = await res.json();
 		console.log('filtered cards:', cards);
 		setPlayers(cards);
 	}
