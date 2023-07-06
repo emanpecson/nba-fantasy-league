@@ -8,28 +8,31 @@ import { User } from '@prisma/client';
 export default function Signup() {
 	const router = useRouter();
 
-	async function signup(user: User) {
-		const res = await fetch('/api/user', {
-			method: 'POST',
-			body: JSON.stringify({
-				email: user.email,
-				password: user.password,
-			}),
-		});
+	async function handleSignup(user: User) {
+		try {
+			const res = await fetch('/api/user', {
+				method: 'POST',
+				body: JSON.stringify({
+					email: user.email,
+					password: user.password,
+				}),
+			});
+	
+			const { createdUser } = await res.json();
 
-		const { createdUser } = await res.json();
-
-		if(createdUser) {
-			router.push('/login');
+			if(createdUser)
+				router.push('/login');
+			else
+				throw Error('Failed to create user');
 		}
-		else {
-			console.log('Fail to create user')
+		catch (error) {
+			console.error('Client error:', error);
 		}
 	}
 
 	return (
 		<div>
-			<SignupPrompt signup={signup} />
+			<SignupPrompt handleSignup={handleSignup} />
 			<RouteButton route={'/'}>
 				Cancel
 			</RouteButton>

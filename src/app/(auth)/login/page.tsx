@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 export default function Login() {
 	const router = useRouter();
 
-	async function login(user: User) {
+	async function handleLogin(user: User) {
 		const id = await verifyUser(user);
 
 		if(id) {
@@ -23,7 +23,7 @@ export default function Login() {
 
 	return(
 		<div>
-			<LoginPrompt login={login} />
+			<LoginPrompt handleLogin={handleLogin} />
 			<RouteButton route={'/'}>
 				Cancel
 			</RouteButton>
