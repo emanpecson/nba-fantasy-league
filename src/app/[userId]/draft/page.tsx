@@ -12,13 +12,18 @@ export default function Draft() {
 	const [searchInput, setSearchInput] = useState('');
 	const [team, setTeam] = useState('');
 	const [position, setPosition] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		const handleFilter = async () => {
+			setIsLoading(true);
+
 			const res = await fetch(`/api/card?searchInput=${searchInput}&team=${team}&position=${position}`, { method: 'GET' });
 			const { cards } = await res.json();
 			console.log('filtered cards:', cards);
 			setPlayerCards(cards);
+
+			setIsLoading(false);
 		}
 		handleFilter();
 	}, [team, position, searchInput])
@@ -41,7 +46,7 @@ export default function Draft() {
 							<PositionSelect setPosition={setPosition} />
 						</div>
 					</div>
-					<DraftTable playerCards={playerCards} />
+					<DraftTable playerCards={playerCards} isLoading={isLoading} />
 				</div>
 			</div>
 		</div>
