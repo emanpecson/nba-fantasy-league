@@ -1,5 +1,6 @@
 import React, { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
 export default function Modal({ isOpen, onClose, children }: { isOpen: boolean, onClose: () => void, children: React.ReactNode }) {
   const cancelButtonRef = useRef(null)
@@ -31,8 +32,8 @@ export default function Modal({ isOpen, onClose, children }: { isOpen: boolean, 
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-							<button type="button" className="" onClick={onClose} ref={cancelButtonRef}>
-								X
+							<button type="button" className="hover:bg-gray-100" onClick={onClose} ref={cancelButtonRef}>
+								<XMarkIcon className="h-6 w-6" />
 							</button>
                 <div>
                   <div className="mt-3 text-center sm:mt-5">
