@@ -25,12 +25,12 @@ export default function PositionSelect({
 }) {
   const [selected, setSelected] = useState<PositionOption | null>(null)
 
-	async function handleSelect(position: PositionOption) {
+	function handleSelect(position: PositionOption) {
 		setSelected(position);
 		setPosition(position.abbreviation);
 	}
 
-	async function resetSelect() {
+	function resetSelect() {
 		setSelected(null);
 		setPosition('');
 	}
@@ -41,7 +41,7 @@ export default function PositionSelect({
 				{({ open }) => (
 					<>
 						<div className="relative mt-2">
-							<Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+							<Listbox.Button className="relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
 								{ selected && 
 									<button onClick={resetSelect} className="absolute left-2.5 top-2.5">
 										<XMarkIcon className="h-4 w-4"/>
