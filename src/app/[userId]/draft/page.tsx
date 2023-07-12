@@ -6,6 +6,8 @@ import { Card } from '@prisma/client';
 import DraftSearch from '@/components/draft/DraftSearch';
 import TeamCombobox from '@/components/draft/TeamCombobox';
 import PositionSelect from '@/components/draft/PositionSelect';
+import RosterView from '@/components/draft/roster/RosterView';
+import Roster from '@/models/Roster';
 
 export default function Draft() {
 	const [playerCards, setPlayerCards] = useState<Card[]>([]);
@@ -13,6 +15,11 @@ export default function Draft() {
 	const [team, setTeam] = useState('');
 	const [position, setPosition] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+
+	const [roster, setRoster] = useState<Roster>({
+		starters: { pg: null, sg: null, sf: null, pf: null, c: null },
+		bench: { pg: null, sg: null, sf: null, pf: null, c: null },
+	});
 
 	useEffect(() => {
 		const handleFilter = async () => {
@@ -27,6 +34,10 @@ export default function Draft() {
 		}
 		handleFilter();
 	}, [team, position, searchInput])
+
+	useEffect(() => {
+		console.log('roster:', roster);
+	}, [roster]);
 
 	return (
 		<div>
@@ -46,7 +57,8 @@ export default function Draft() {
 							<PositionSelect setPosition={setPosition} />
 						</div>
 					</div>
-					<DraftTable playerCards={playerCards} isLoading={isLoading} />
+					<DraftTable playerCards={playerCards} isLoading={isLoading} roster={roster} setRoster={setRoster} />
+					<RosterView roster={roster} />
 				</div>
 			</div>
 		</div>

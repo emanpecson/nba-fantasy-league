@@ -1,32 +1,43 @@
 import { Card } from "@prisma/client"
-import CardProfile from "./CardProfile"
 import { useState } from "react";
+import CardModal from "./CardModal";
+import Roster from "@/models/Roster";
 
-export default function DraftTable({ playerCards, isLoading }: { playerCards: Card[]; isLoading: boolean }) {
-	const [isOpenCard, setIsOpenCard] = useState(false);
-	const [cardProfile, setCardProfile] = useState<Card>();
+export default function DraftTable({
+	playerCards,
+	isLoading,
+	roster,
+	setRoster,
+}: {
+	playerCards: Card[];
+	isLoading: boolean;
+	roster: Roster;
+	setRoster: (roster: Roster) => void;
+}) {
+	const [cardModalIsOpen, setCardModalIsOpen] = useState(false);
+	const [cardProfile, setCardProfile] = useState<Card | null>(null);
 
 	const loadingRows: JSX.Element[] = [];
-	for(let i = 0; i < 10; i++) {
+	for(let i = 0; i < 6; i++) {
 		loadingRows.push(
-			<tr className="animate-pulse bg-slate-100">
-				<td className="py-4 pl-4 pr-3 sm:pl-6 lg:pl-8"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
-				<td className="px-3 py-4"></td>
+			<tr key={i} className="animate-pulse bg-slate-100 sm:rounded-lg">
+				<td className="py-7 pl-4 pr-3 sm:pl-6 lg:pl-8"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
+				<td className="px-3 py-7"></td>
 			</tr>
 		)
 	}
 
 	function handleRowClick(card: Card) {
 		setCardProfile(card);
-		setIsOpenCard(true);
+		setCardModalIsOpen(true);
 	}
 
   return (
@@ -70,7 +81,7 @@ export default function DraftTable({ playerCards, isLoading }: { playerCards: Ca
 					</div>
 				</div>
 			</div>
-			<CardProfile card={cardProfile} isOpen={isOpenCard} setIsOpen={setIsOpenCard} />
+			<CardModal card={cardProfile} cardModalIsOpen={cardModalIsOpen} setCardModalIsOpen={setCardModalIsOpen} roster={roster} setRoster={setRoster} />
     </div>
   )
 }
