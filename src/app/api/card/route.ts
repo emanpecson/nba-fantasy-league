@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Card, PrismaClient } from "@prisma/client";
+import { Card, Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -12,15 +12,11 @@ export async function GET(req: NextRequest) {
 		}
 		console.log('query:', query);
 
-		const where = {} as { 
-			name?: { contains: string };
-			team?: { contains: string };
-			position?: { contains: string };
-		};
+		const where = {} as Prisma.CardWhereInput;
 
 		// stack where conditions
 		if(query.searchInput) {
-			where.name = { contains: query.searchInput };
+			where.name = { contains: query.searchInput, mode: 'insensitive' };
 		}
 		if(query.team) {
 			where.team = { contains: query.team }
