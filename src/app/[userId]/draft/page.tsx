@@ -10,57 +10,58 @@ import RosterView from '@/components/draft/roster/RosterView';
 import Roster from '@/models/Roster';
 
 export default function Draft() {
-	const [playerCards, setPlayerCards] = useState<Card[]>([]);
-	const [searchInput, setSearchInput] = useState('');
-	const [team, setTeam] = useState('');
-	const [position, setPosition] = useState('');
-	const [isLoading, setIsLoading] = useState(false);
+  const [playerCards, setPlayerCards] = useState<Card[]>([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [team, setTeam] = useState('');
+  const [position, setPosition] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [roster, setRoster] = useState<Roster>({
+    starters: { pg: null, sg: null, sf: null, pf: null, c: null },
+    bench: { pg: null, sg: null, sf: null, pf: null, c: null },
+  });
 
-	const [roster, setRoster] = useState<Roster>({
-		starters: { pg: null, sg: null, sf: null, pf: null, c: null },
-		bench: { pg: null, sg: null, sf: null, pf: null, c: null },
-	});
+  useEffect(() => {
+    const handleFilter = async () => {
+      setIsLoading(true);
 
-	useEffect(() => {
-		const handleFilter = async () => {
-			setIsLoading(true);
+      const res = await fetch(
+        `/api/card?searchInput=${searchInput}&team=${team}&position=${position}`,
+        { method: 'GET' }
+      );
+      const { cards } = await res.json();
+      console.log('filtered cards:', cards);
+      setPlayerCards(cards);
 
-			const res = await fetch(`/api/card?searchInput=${searchInput}&team=${team}&position=${position}`, { method: 'GET' });
-			const { cards } = await res.json();
-			console.log('filtered cards:', cards);
-			setPlayerCards(cards);
+      setIsLoading(false);
+    };
+    handleFilter();
+  }, [team, position, searchInput]);
 
-			setIsLoading(false);
-		}
-		handleFilter();
-	}, [team, position, searchInput])
-
-	useEffect(() => {
-		console.log('roster:', roster);
-	}, [roster]);
-
-	return (
-		<div>
-			<div className="flex flex-row">
-				<div className="basis-1/5 bg-red-100">
-					pick order as list format
-				</div>
-				<div className="basis-4/5">
-					<div className="flex flex-row">
-						<div className="basis-3/5">
-							<DraftSearch setSearchInput={setSearchInput} />
-						</div>
-						<div className="basis-1/5">
-							<TeamCombobox setTeam={setTeam} />
-						</div>
-						<div className="basis-1/5">
-							<PositionSelect setPosition={setPosition} />
-						</div>
-					</div>
-					<DraftTable playerCards={playerCards} isLoading={isLoading} roster={roster} setRoster={setRoster} />
-					<RosterView roster={roster} />
-				</div>
-			</div>
-		</div>
-	)
+  return (
+    <div>
+      <div className="flex flex-row">
+        <div className="basis-1/5 bg-red-100">pick order as list format</div>
+        <div className="basis-4/5">
+          <div className="flex flex-row">
+            <div className="basis-3/5">
+              <DraftSearch setSearchInput={setSearchInput} />
+            </div>
+            <div className="basis-1/5">
+              <TeamCombobox setTeam={setTeam} />
+            </div>
+            <div className="basis-1/5">
+              <PositionSelect setPosition={setPosition} />
+            </div>
+          </div>
+          <DraftTable
+            playerCards={playerCards}
+            isLoading={isLoading}
+            roster={roster}
+            setRoster={setRoster}
+          />
+          <RosterView roster={roster} />
+        </div>
+      </div>
+    </div>
+  );
 }
