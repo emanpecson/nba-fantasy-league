@@ -42,12 +42,27 @@ export default function DraftTable({
     setCardModalIsOpen(true);
   }
 
+	function isAvailableCard(card: Card) {
+		for(const rosterSpot of Object.values(roster.starters)) {
+			if(rosterSpot && rosterSpot.id === card.id)
+				return false;
+		}
+		for(const rosterSpot of Object.values(roster.bench)) {
+			if(rosterSpot && rosterSpot.id === card.id)
+				return false;
+		}
+
+		// soon we'll be checking against all rosters, not just mine
+
+		return true;
+	}
+
   return (
     <div className="pt-4">
       <div className="px-4 sm:px-6 lg:px-8 h-96 overflow-auto shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg bg-white">
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8 h-full">
           <div className="inline-block min-w-full py-2 align-middle h-full">
-						{ playerCards.length > 0 && 
+						{ playerCards.length > 0 &&
 							<table className="min-w-full divide-y divide-gray-300 relative">
 								<thead>
 									<tr>
@@ -69,7 +84,8 @@ export default function DraftTable({
 											<tr
 												key={card.id}
 												onClick={() => handleRowClick(card)}
-												className="cursor-pointer hover:bg-gray-50">
+												className={!isAvailableCard(card) ? 'pointer-events-none bg-gray-200' : 'cursor-pointer bg-white hover:bg-gray-50'}
+											>
 												<td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">{card.name}</td>
 												<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{card.fantasyPpg}</td>
 												<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{card.ppg}</td>
@@ -100,7 +116,7 @@ export default function DraftTable({
         </div>
       </div>
       <CardModal
-        card={cardProfile}
+        card={cardProfile} 
         cardModalIsOpen={cardModalIsOpen}
         setCardModalIsOpen={setCardModalIsOpen}
         roster={roster}
