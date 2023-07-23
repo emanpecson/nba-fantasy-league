@@ -70,22 +70,22 @@ export default function CardModal({
 
 			{ rosterModalIsOpen &&
 				<Modal onClose={() => setRosterModalIsOpen(false)} isOpen={rosterModalIsOpen}>
-					<div className="flex space-x-5">
+					<div className="flex space-x-8 font-semibold justify-center">
 						<div className="flex-row space-x-3">
 							<p>starting:</p>
-							<button onClick={() => { addToRoster(true, 'pg') }} disabled={roster.starters.pg != null || !card?.position.includes('G')}>pg</button>
-							<button onClick={() => { addToRoster(true, 'sg') }} disabled={roster.starters.sg != null || !card?.position.includes('G')}>sg</button>
-							<button onClick={() => { addToRoster(true, 'sf') }} disabled={roster.starters.sf != null || !card?.position.includes('F')}>sf</button>
-							<button onClick={() => { addToRoster(true, 'pf') }} disabled={roster.starters.pf != null || !card?.position.includes('F')}>pf</button>
-							<button onClick={() => { addToRoster(true, 'c') }} disabled={roster.starters.c != null || !card?.position.includes('C')}>c</button>
+							<button onClick={() => { addToRoster(true, 'pg') }} disabled={roster.starters.pg != null || !card?.position.includes('G')} className="disabled:text-gray-400">pg</button>
+							<button onClick={() => { addToRoster(true, 'sg') }} disabled={roster.starters.sg != null || !card?.position.includes('G')} className="disabled:text-gray-400">sg</button>
+							<button onClick={() => { addToRoster(true, 'sf') }} disabled={roster.starters.sf != null || !card?.position.includes('F')} className="disabled:text-gray-400">sf</button>
+							<button onClick={() => { addToRoster(true, 'pf') }} disabled={roster.starters.pf != null || !card?.position.includes('F')} className="disabled:text-gray-400">pf</button>
+							<button onClick={() => { addToRoster(true, 'c') }} disabled={roster.starters.c != null || !card?.position.includes('C')} className="disabled:text-gray-400">c</button>
 						</div>
 						<div className="flex-row space-x-3">
 							<p>bench:</p>
-							<button onClick={() => { addToRoster(false, 'pg') }} disabled={roster.bench.pg != null || !card?.position.includes('G')}>pg</button>
-							<button onClick={() => { addToRoster(false, 'sg') }} disabled={roster.bench.sg != null || !card?.position.includes('G')}>sg</button>
-							<button onClick={() => { addToRoster(false, 'sf') }} disabled={roster.bench.sf != null || !card?.position.includes('F')}>sf</button>
-							<button onClick={() => { addToRoster(false, 'pf') }} disabled={roster.bench.pf != null || !card?.position.includes('F')}>pf</button>
-							<button onClick={() => { addToRoster(false, 'c') }} disabled={roster.bench.c != null || !card?.position.includes('C')}>c</button>
+							<button onClick={() => { addToRoster(false, 'pg') }} disabled={roster.bench.pg != null || !card?.position.includes('G')} className="disabled:text-gray-400">pg</button>
+							<button onClick={() => { addToRoster(false, 'sg') }} disabled={roster.bench.sg != null || !card?.position.includes('G')} className="disabled:text-gray-400">sg</button>
+							<button onClick={() => { addToRoster(false, 'sf') }} disabled={roster.bench.sf != null || !card?.position.includes('F')} className="disabled:text-gray-400">sf</button>
+							<button onClick={() => { addToRoster(false, 'pf') }} disabled={roster.bench.pf != null || !card?.position.includes('F')} className="disabled:text-gray-400">pf</button>
+							<button onClick={() => { addToRoster(false, 'c') }} disabled={roster.bench.c != null || !card?.position.includes('C')} className="disabled:text-gray-400">c</button>
 						</div>
 					</div>
 				</Modal>

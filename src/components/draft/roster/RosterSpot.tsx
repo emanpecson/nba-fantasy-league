@@ -8,18 +8,22 @@ export default function RosterSpot({
 	position: string,
 }) {
 	return (
-		<div className="h-24 rounded-md bg-blue-50">
-			<p className="font-semibold">{ position }</p>
-			<div>
-				{ card ?
-					<div>
-						{ card.name }
-					</div>
-					:
-					<div>
-						<p className="text-gray-400">Empty</p>
-					</div>
-				}
+		<div className="h-32 rounded-lg bg-white">
+			<div className="p-3">
+				<p className="italic">{ position }</p>
+				<div>
+					{ card ?
+						<div>
+							<p className="font-semibold pb-2">{card.name}</p>
+							<p>{card.ppg}p, {card.apg}a, {card.rpg}r</p>
+							<p>{card.height}, {card.weight}</p>
+						</div>
+						:
+						<div>
+							<p className="text-gray-400">Empty</p>
+						</div>
+					}
+				</div>
 			</div>
 		</div>
 	)
