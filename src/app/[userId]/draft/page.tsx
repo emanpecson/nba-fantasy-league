@@ -8,6 +8,7 @@ import TeamCombobox from '@/components/draft/TeamCombobox';
 import PositionSelect from '@/components/draft/PositionSelect';
 import RosterView from '@/components/draft/roster/RosterView';
 import Roster from '@/models/Roster';
+import PickOrder from '@/components/draft/PickOrder';
 
 export default function Draft() {
   const [playerCards, setPlayerCards] = useState<Card[]>([]);
@@ -40,9 +41,12 @@ export default function Draft() {
   return (
     <div>
       <div className="flex flex-row">
-        <div className="basis-1/5 bg-red-100">pick order as list format</div>
-        <div className="basis-4/5">
-          <div className="flex flex-row">
+        <div className="basis-1/5 pt-2 pl-3">
+					<PickOrder />
+				</div>
+
+        <div className="basis-4/5 px-3">
+          <div className="flex flex-row space-x-1.5">
             <div className="basis-3/5">
               <DraftSearch setSearchInput={setSearchInput} />
             </div>
@@ -53,13 +57,19 @@ export default function Draft() {
               <PositionSelect setPosition={setPosition} />
             </div>
           </div>
-          <DraftTable
-            playerCards={playerCards}
-            isLoading={isLoading}
-            roster={roster}
-            setRoster={setRoster}
-          />
-          <RosterView roster={roster} />
+
+					<div>
+						<DraftTable
+							playerCards={playerCards}
+							isLoading={isLoading}
+							roster={roster}
+							setRoster={setRoster}
+						/>
+					</div>
+
+					<div>
+          	<RosterView roster={roster} />
+					</div>
         </div>
       </div>
     </div>

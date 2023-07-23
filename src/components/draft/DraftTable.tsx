@@ -97,7 +97,8 @@ export default function DraftTable({
 												<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{card.team ? card.team : 'N/A'}</td>
 												<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{card.position}</td>
 											</tr>
-										))}
+										))
+									}
 									{isLoading && loadingRows}
 								</tbody>
 							</table>

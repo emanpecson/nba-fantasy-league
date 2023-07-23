@@ -3,7 +3,7 @@ import RosterSpot from "./RosterSpot";
 
 export default function RosterView({ roster }: { roster: Roster }) {
 	return (
-		<div className="px-3">
+		<div>
 			<div>
 				<p className="font-semibold py-2 pl-1">Starters</p>
 				<div className="columns-5 gap-3">
