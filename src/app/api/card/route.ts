@@ -25,7 +25,12 @@ export async function GET(req: NextRequest) {
 			where.position = { contains: query.position }
 		}
 
-		const cards = await prisma.card.findMany({ where });
+		const cards = await prisma.card.findMany({
+			where,
+			orderBy: {
+				fantasyPpg: 'desc',
+			},
+		});
 		console.log('got cards:');
 		return NextResponse.json({ cards }, { status: 200 });
 	}
