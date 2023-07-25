@@ -13,8 +13,8 @@ import PickOrder from '@/components/draft/PickOrder';
 export default function Draft() {
   const [playerCards, setPlayerCards] = useState<Card[]>([]);
   const [searchInput, setSearchInput] = useState('');
-  const [team, setTeam] = useState('');
-  const [position, setPosition] = useState('');
+  const [teamFilter, setTeamFilter] = useState('');
+  const [positionFilter, setPositionFilter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [roster, setRoster] = useState<Roster>({
     starters: { pg: null, sg: null, sf: null, pf: null, c: null },
@@ -26,7 +26,7 @@ export default function Draft() {
       setIsLoading(true);
 
       const res = await fetch(
-        `/api/card?searchInput=${searchInput}&team=${team}&position=${position}`,
+        `/api/card?searchInput=${searchInput}&team=${teamFilter}&position=${positionFilter}`,
         { method: 'GET' }
       );
       const { cards } = await res.json();
@@ -36,7 +36,7 @@ export default function Draft() {
       setIsLoading(false);
     };
     handleFilter();
-  }, [team, position, searchInput]);
+  }, [teamFilter, positionFilter, searchInput]);
 
   return (
     <div>
@@ -51,10 +51,10 @@ export default function Draft() {
               <DraftSearch setSearchInput={setSearchInput} />
             </div>
             <div className="basis-1/5">
-              <TeamCombobox setTeam={setTeam} />
+              <TeamCombobox setTeam={setTeamFilter} />
             </div>
             <div className="basis-1/5">
-              <PositionSelect setPosition={setPosition} />
+              <PositionSelect setPosition={setPositionFilter} />
             </div>
           </div>
 
