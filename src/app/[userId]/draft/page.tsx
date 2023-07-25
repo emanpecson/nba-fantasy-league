@@ -9,6 +9,7 @@ import PositionSelect from '@/components/draft/PositionSelect';
 import RosterView from '@/components/draft/roster/RosterView';
 import Roster from '@/models/Roster';
 import PickOrder from '@/components/draft/PickOrder';
+import Team from '@/models/Team';
 
 export default function Draft() {
   const [playerCards, setPlayerCards] = useState<Card[]>([]);
@@ -20,6 +21,17 @@ export default function Draft() {
     starters: { pg: null, sg: null, sf: null, pf: null, c: null },
     bench: { pg: null, sg: null, sf: null, pf: null, c: null },
   });
+
+	const [teams, setTeams] = useState<Team[]>([
+		new Team('Lakers'),
+		new Team('MyTeam'),
+		new Team('Heat'),
+	]);
+
+	// test log
+	useEffect(() => {
+		console.log('teams:', teams);
+	}, [teams]);
 
   useEffect(() => {
     const handleFilter = async () => {
@@ -42,7 +54,7 @@ export default function Draft() {
     <div>
       <div className="flex flex-row">
         <div className="basis-1/5 pt-2 pl-3">
-					<PickOrder />
+					<PickOrder teams={teams} />
 				</div>
 
         <div className="basis-4/5 px-3">
@@ -64,6 +76,8 @@ export default function Draft() {
 							isLoading={isLoading}
 							roster={roster}
 							setRoster={setRoster}
+							teams={teams}
+							setTeams={setTeams}
 						/>
 					</div>
 

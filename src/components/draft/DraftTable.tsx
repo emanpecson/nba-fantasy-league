@@ -3,17 +3,22 @@ import { useState } from 'react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import CardModal from './CardModal';
 import Roster from '@/models/Roster';
+import Team from '@/models/Team';
 
 export default function DraftTable({
   playerCards,
   isLoading,
   roster,
   setRoster,
+	teams,
+	setTeams,
 }: {
   playerCards: Card[];
   isLoading: boolean;
   roster: Roster;
   setRoster: (roster: Roster) => void;
+	teams: Team[];
+	setTeams: (teams: Team[]) => void;
 }) {
   const [cardModalIsOpen, setCardModalIsOpen] = useState(false);
   const [cardProfile, setCardProfile] = useState<Card | null>(null);
@@ -122,6 +127,8 @@ export default function DraftTable({
         setCardModalIsOpen={setCardModalIsOpen}
         roster={roster}
         setRoster={setRoster}
+				teams={teams}
+				setTeams={setTeams}
       />
     </div>
   );

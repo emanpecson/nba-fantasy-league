@@ -3,6 +3,7 @@ import CommonButton from "../CommonButton";
 import Modal from "../Modal";
 import { Card } from "@prisma/client";
 import Roster from "@/models/Roster";
+import Team from "@/models/Team";
 // import Notification from "../Notification";
 // import getErrorMessage from "@/lib/getErrorMessage";
 
@@ -12,20 +13,22 @@ export default function CardModal({
 	setCardModalIsOpen,
 	roster,
 	setRoster,
+	teams,
+	setTeams,
 }: {
 	card: Card | null;
 	cardModalIsOpen: boolean;
 	setCardModalIsOpen: (flag: boolean) => void;
 	roster: Roster;
 	setRoster: (roster: Roster) => void;
+	teams: Team[];
+	setTeams: (teams: Team[]) => void;
 }) {
 	const [rosterModalIsOpen, setRosterModalIsOpen] = useState(false);
 	// const [notificationIsOpen, setNotificationIsOpen] = useState(false);
 	// const [notificationMessage, setNotificationMessage] = useState('');
 
 	function addToRoster(isStarting: boolean, assignedPosition: string) {
-		// setRosterModalIsOpen(true);
-
 		if(card) {
 			// copy as new obj to trigger reactivity (avoid using same reference)
 			const rosterTemp = {...roster};
