@@ -20,6 +20,20 @@ export default function Draft() {
 		new Team('Heat'),
 	]);
 
+	const [teamDraftOrder, setTeamDraftOrder] = useState<Array<Array<Team>>>(() => {
+		const tempTeamDraftOrder: Array<Array<Team>> = [];
+
+		for(let i = 1; i <= 10; i++) {
+			const round: Array<Team> = [];
+			for(const team of teams) {
+				round.push(team);
+			}
+			tempTeamDraftOrder.push(round);
+		}
+
+		return tempTeamDraftOrder;
+	});
+
 	// filters
   const [searchInput, setSearchInput] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
@@ -27,7 +41,7 @@ export default function Draft() {
 
 	// states
   const [isLoading, setIsLoading] = useState(false);
-	const [teamPicking, setTeamPicking] = useState('MyTeam');
+	const [teamPicking, setTeamPicking] = useState(teams[0].name);
 	const [round, setRound] = useState(1);
 
 	// test log
@@ -56,7 +70,7 @@ export default function Draft() {
     <div>
       <div className="flex flex-row">
         <div className="basis-1/5 pt-2 pl-3">
-					<PickOrder teams={teams} teamPicking={teamPicking} round={round} />
+					<PickOrder teamDraftOrder={teamDraftOrder} teamPicking={teamPicking} round={round} />
 				</div>
 
         <div className="basis-4/5 px-3">

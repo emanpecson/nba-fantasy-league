@@ -1,32 +1,31 @@
 import Team from "@/models/Team";
 
 export default function PickOrder({
-	teams,
+	teamDraftOrder,
 	teamPicking,
 	round,
 }: {
-	teams: Team[],
+	teamDraftOrder: Array<Array<Team>>,
 	teamPicking: string,
 	round: number,
 }) {
 	function classNames(...classes: string[]) {
-		return classes.filter(Boolean).join(' ')
+		return classes.filter(Boolean).join(' ');
 	}
 
 	const rounds: JSX.Element[] = [];
-  for (let i = 1; i <= 10; i++) {
-    rounds.push(
+	for(let i = 0; i < teamDraftOrder.length; i++) {
+		rounds.push(
 			<ul className="divide-y">
-				<p className="py-3 font-semibold flex justify-center">Round { i }</p>
+				<p className="py-3 font-semibold flex justify-center">Round { i+1 }</p>
 				{
-					teams.map((team) => (
-						// <li className="p-4 flex">{ team.name }</li>
-						<li className={classNames("p-4 flex", team.name === teamPicking && i === round ? 'bg-blue-100' : '')}>{ team.name }</li>
+					teamDraftOrder[i].map((team: Team) => (
+						<li className={classNames("p-4 flex", team.name === teamPicking && i+1 === round ? 'bg-blue-100' : '')}>{ team.name }</li>
 					))
 				}
 			</ul>
     );
-  }
+	}
 
 	return (
 		<div className="bg-white rounded-lg drop-shadow-lg">

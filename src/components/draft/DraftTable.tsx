@@ -37,6 +37,9 @@ export default function DraftTable({
 		when card modal updates the roster, this function will trigger
 		and set the roster for the appropriate team and trigger the
 		setTeams function in the parent
+
+		since a pick was made, should also update the state of "teamPicking"
+		+ "round" if necessary
 	*/
 	function setRosterForPickingTeam(roster: Roster) {
 		setActiveRoster(roster);
