@@ -1,32 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import DraftTable from '@/components/draft/DraftTable';
 import { Card } from '@prisma/client';
+import Team from '@/models/Team';
+import PickOrder from '@/components/draft/PickOrder';
+import DraftTable from '@/components/draft/DraftTable';
+import RosterView from '@/components/draft/roster/RosterView';
 import DraftSearch from '@/components/draft/DraftSearch';
 import TeamCombobox from '@/components/draft/TeamCombobox';
 import PositionSelect from '@/components/draft/PositionSelect';
-import RosterView from '@/components/draft/roster/RosterView';
-import Roster from '@/models/Roster';
-import PickOrder from '@/components/draft/PickOrder';
-import Team from '@/models/Team';
 
 export default function Draft() {
+	// displayed data
   const [playerCards, setPlayerCards] = useState<Card[]>([]);
+	const [myTeam, setMyTeam] = useState<Team>(new Team('MyTeam'));
+	const [teams, setTeams] = useState<Team[]>([
+		new Team('Lakers'),
+		myTeam,
+		new Team('Heat'),
+	]);
+
+	// filters
   const [searchInput, setSearchInput] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [roster, setRoster] = useState<Roster>({
-    starters: { pg: null, sg: null, sf: null, pf: null, c: null },
-    bench: { pg: null, sg: null, sf: null, pf: null, c: null },
-  });
 
-	const [teams, setTeams] = useState<Team[]>([
-		new Team('Lakers'),
-		new Team('MyTeam'),
-		new Team('Heat'),
-	]);
+	// states
+  const [isLoading, setIsLoading] = useState(false);
+	const [teamPicking, setTeamPicking] = useState('MyTeam');
+	const [round, setRound] = useState(1);
 
 	// test log
 	useEffect(() => {
@@ -54,7 +56,7 @@ export default function Draft() {
     <div>
       <div className="flex flex-row">
         <div className="basis-1/5 pt-2 pl-3">
-					<PickOrder teams={teams} />
+					<PickOrder teams={teams} teamPicking={teamPicking} round={round} />
 				</div>
 
         <div className="basis-4/5 px-3">
@@ -74,15 +76,14 @@ export default function Draft() {
 						<DraftTable
 							playerCards={playerCards}
 							isLoading={isLoading}
-							roster={roster}
-							setRoster={setRoster}
 							teams={teams}
 							setTeams={setTeams}
+							teamPicking={teamPicking}
 						/>
 					</div>
 
 					<div>
-          	<RosterView roster={roster} />
+          	<RosterView roster={myTeam.roster} />
 					</div>
         </div>
       </div>

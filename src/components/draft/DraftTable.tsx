@@ -8,58 +8,90 @@ import Team from '@/models/Team';
 export default function DraftTable({
   playerCards,
   isLoading,
-  roster,
-  setRoster,
 	teams,
 	setTeams,
+	teamPicking,
 }: {
   playerCards: Card[];
   isLoading: boolean;
-  roster: Roster;
-  setRoster: (roster: Roster) => void;
 	teams: Team[];
 	setTeams: (teams: Team[]) => void;
+	teamPicking: string;
 }) {
-  const [cardModalIsOpen, setCardModalIsOpen] = useState(false);
+	// card that the modal will display details for
   const [cardProfile, setCardProfile] = useState<Card | null>(null);
+  const [cardModalIsOpen, setCardModalIsOpen] = useState(false);
 
-	// or optionally replace the entire table and make up some shape
-  const loadingRows: JSX.Element[] = [];
-  for (let i = 0; i < 6; i++) {
-    loadingRows.push(
-      <tr key={i} className="justify-items-center">
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-        <td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
-      </tr>
-    );
-  }
+	// active roster is the curr team that is picking
+	const [activeRoster, setActiveRoster] = useState<Roster | null>(() => {
+		for(const team of teams) {
+			if(team.name === teamPicking) {
+				console.log(`DraftTable.tsx: activeRoster = ${team.roster}`)
+				return team.roster;
+			}
+		}
+		return null;
+	})
+
+	/*
+		when card modal updates the roster, this function will trigger
+		and set the roster for the appropriate team and trigger the
+		setTeams function in the parent
+	*/
+	function setRosterForPickingTeam(roster: Roster) {
+		setActiveRoster(roster);
+
+		// copy teams
+		const teamsTemp = [...teams];
+
+		// set roster for team
+		for(const team of teams) {
+			if(team.name === teamPicking) {
+				team.setRoster(roster);
+			}
+		}
+
+		// update teams back up to parent (draft/page.tsx)
+		setTeams(teamsTemp);
+	}
 
   function handleRowClick(card: Card) {
     setCardProfile(card);
     setCardModalIsOpen(true);
   }
 
+	// helper function to disable card if it already takes any one team's roster spot
 	function isAvailableCard(card: Card) {
-		for(const rosterSpot of Object.values(roster.starters)) {
-			if(rosterSpot && rosterSpot.id === card.id)
-				return false;
+		for(const team of teams) {
+			for(const rosterSpot of Object.values(team.roster.starters)) {
+				if(rosterSpot && rosterSpot.id === card.id)
+					return false;
+			}
+			for(const rosterSpot of Object.values(team.roster.bench)) {
+				if(rosterSpot && rosterSpot.id === card.id)
+					return false;
+			}
 		}
-		for(const rosterSpot of Object.values(roster.bench)) {
-			if(rosterSpot && rosterSpot.id === card.id)
-				return false;
-		}
-
-		// soon we'll be checking against all rosters, not just mine
-
 		return true;
+	}
+
+	// ALTERNATIVE METHOD: replace the entire table and make up some shape for skeleton loader
+	const loadingRows: JSX.Element[] = [];
+	for (let i = 0; i < 6; i++) {
+		loadingRows.push(
+			<tr key={i} className="justify-items-center">
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+				<td className="h-14 w-6"><div className="container mx-auto animate-pulse rounded-full bg-[#f5f5f5] h-5 w-5/6"></div></td>
+			</tr>
+		);
 	}
 
   return (
@@ -125,10 +157,8 @@ export default function DraftTable({
         card={cardProfile} 
         cardModalIsOpen={cardModalIsOpen}
         setCardModalIsOpen={setCardModalIsOpen}
-        roster={roster}
-        setRoster={setRoster}
-				teams={teams}
-				setTeams={setTeams}
+        roster={activeRoster}
+        setRoster={setRosterForPickingTeam}
       />
     </div>
   );

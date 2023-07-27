@@ -6,10 +6,7 @@ export default class Team {
 
 	constructor(name: string) {
 		this.name = name;
-		this.roster = {
-			starters: { pg: null, sg: null, sf: null, pf: null, c: null },
-			bench: { pg: null, sg: null, sf: null, pf: null, c: null },
-		};
+		this.roster = new Roster();
 	}
 
 	setRoster(roster: Roster) {
