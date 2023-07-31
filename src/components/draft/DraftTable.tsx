@@ -1,5 +1,5 @@
 import { Card } from '@prisma/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import CardModal from './CardModal';
 import Roster from '@/models/Roster';
@@ -16,30 +16,27 @@ export default function DraftTable({
   isLoading: boolean;
 	teams: Team[];
 	setTeams: (teams: Team[]) => void;
-	teamPicking: string;
+	teamPicking: Team;
 }) {
 	// card that the modal will display details for
   const [cardProfile, setCardProfile] = useState<Card | null>(null);
   const [cardModalIsOpen, setCardModalIsOpen] = useState(false);
 
-	// active roster is the curr team that is picking
-	const [activeRoster, setActiveRoster] = useState<Roster | null>(() => {
+	// update active roster to curr team picking
+	const [activeRoster, setActiveRoster] = useState<Roster | null>(null);
+	useEffect(() => {
 		for(const team of teams) {
-			if(team.name === teamPicking) {
+			if(team.name === teamPicking.name) {
 				console.log(`DraftTable.tsx: activeRoster = ${team.roster}`)
-				return team.roster;
+				setActiveRoster(team.roster);
 			}
 		}
-		return null;
-	})
+	}, [teams])
 
 	/*
 		when card modal updates the roster, this function will trigger
 		and set the roster for the appropriate team and trigger the
 		setTeams function in the parent
-
-		since a pick was made, should also update the state of "teamPicking"
-		+ "round" if necessary
 	*/
 	function setRosterForPickingTeam(roster: Roster) {
 		setActiveRoster(roster);
@@ -49,7 +46,7 @@ export default function DraftTable({
 
 		// set roster for team
 		for(const team of teams) {
-			if(team.name === teamPicking) {
+			if(team.name === teamPicking.name) {
 				team.setRoster(roster);
 			}
 		}

@@ -9,6 +9,7 @@ import RosterView from '@/components/draft/roster/RosterView';
 import DraftSearch from '@/components/draft/DraftSearch';
 import TeamCombobox from '@/components/draft/TeamCombobox';
 import PositionSelect from '@/components/draft/PositionSelect';
+import isCurrentTeamAndRound from '@/lib/draft/isCurrentTeamAndRound';
 
 export default function Draft() {
 	// displayed data
@@ -20,10 +21,11 @@ export default function Draft() {
 		new Team('Heat'),
 	]);
 
+	const [draftIndex, setDraftIndex] = useState(0);
 	const [teamDraftOrder, setTeamDraftOrder] = useState<Array<Array<Team>>>(() => {
 		const tempTeamDraftOrder: Array<Array<Team>> = [];
 
-		for(let i = 1; i <= 10; i++) {
+		for(let i = 0; i < 10; i++) {
 			const round: Array<Team> = [];
 			for(const team of teams) {
 				round.push(team);
@@ -41,8 +43,7 @@ export default function Draft() {
 
 	// states
   const [isLoading, setIsLoading] = useState(false);
-	const [teamPicking, setTeamPicking] = useState(teams[0].name);
-	const [round, setRound] = useState(1);
+	const [teamPicking, setTeamPicking] = useState(teamDraftOrder[0][0]); // first round, first team 
 
 	// test log
 	useEffect(() => {
@@ -66,11 +67,26 @@ export default function Draft() {
     handleFilter();
   }, [teamFilter, positionFilter, searchInput]);
 
+	// update teams + draft order
+	function handleSetTeams(teams: Team[]) {
+		// get curr team picking
+		for(let round_i = 0; round_i < teamDraftOrder.length; round_i++) {
+			for(let team_i = 0; team_i < teamDraftOrder[round_i].length; team_i++) {
+				if(isCurrentTeamAndRound(round_i, team_i, draftIndex+1, 3)) {
+					console.log(teamDraftOrder[round_i][team_i].name);
+					setTeamPicking(teamDraftOrder[round_i][team_i]);
+				}
+			}
+		}
+		setDraftIndex(draftIndex+1);
+		setTeams(teams);
+	}
+
   return (
     <div>
       <div className="flex flex-row">
         <div className="basis-1/5 pt-2 pl-3">
-					<PickOrder teamDraftOrder={teamDraftOrder} teamPicking={teamPicking} round={round} />
+					<PickOrder teamDraftOrder={teamDraftOrder} draftIndex={draftIndex} />
 				</div>
 
         <div className="basis-4/5 px-3">
@@ -91,7 +107,7 @@ export default function Draft() {
 							playerCards={playerCards}
 							isLoading={isLoading}
 							teams={teams}
-							setTeams={setTeams}
+							setTeams={handleSetTeams}
 							teamPicking={teamPicking}
 						/>
 					</div>

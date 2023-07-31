@@ -1,26 +1,26 @@
 import Team from "@/models/Team";
+import isCurrentTeamAndRound from "@/lib/draft/isCurrentTeamAndRound";
 
 export default function PickOrder({
 	teamDraftOrder,
-	teamPicking,
-	round,
+	draftIndex,
 }: {
 	teamDraftOrder: Array<Array<Team>>,
-	teamPicking: string,
-	round: number,
+	draftIndex: number,
 }) {
 	function classNames(...classes: string[]) {
 		return classes.filter(Boolean).join(' ');
 	}
 
 	const rounds: JSX.Element[] = [];
-	for(let i = 0; i < teamDraftOrder.length; i++) {
+	for(let round_i = 0; round_i < teamDraftOrder.length; round_i++) {
 		rounds.push(
 			<ul className="divide-y">
-				<p className="py-3 font-semibold flex justify-center">Round { i+1 }</p>
+				<p className="py-3 font-semibold flex justify-center">Round { round_i+1 }</p>
 				{
-					teamDraftOrder[i].map((team: Team) => (
-						<li className={classNames("p-4 flex", team.name === teamPicking && i+1 === round ? 'bg-blue-100' : '')}>{ team.name }</li>
+					teamDraftOrder[round_i].map((team: Team, team_i: number) => (
+						// highlight if it is the curr team picking
+						<li className={classNames("p-4 flex", isCurrentTeamAndRound(round_i, team_i, draftIndex, 3) ? 'bg-blue-100 font-semibold' : '')}>{ team.name }</li>
 					))
 				}
 			</ul>
