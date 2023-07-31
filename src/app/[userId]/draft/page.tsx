@@ -21,20 +21,14 @@ export default function Draft() {
 		new Team('Heat'),
 	]);
 
-	const [draftIndex, setDraftIndex] = useState(0);
-	const [teamDraftOrder, setTeamDraftOrder] = useState<Array<Array<Team>>>(() => {
-		const tempTeamDraftOrder: Array<Array<Team>> = [];
-
-		for(let i = 0; i < 10; i++) {
-			const round: Array<Team> = [];
-			for(const team of teams) {
-				round.push(team);
-			}
-			tempTeamDraftOrder.push(round);
+	const teamDraftOrder: Team[][] = [];
+	for(let i = 0; i < 10; i++) {
+		const round: Array<Team> = [];
+		for(const team of teams) {
+			round.push(team);
 		}
-
-		return tempTeamDraftOrder;
-	});
+		teamDraftOrder.push(round);
+	}
 
 	// filters
   const [searchInput, setSearchInput] = useState('');
@@ -43,7 +37,8 @@ export default function Draft() {
 
 	// states
   const [isLoading, setIsLoading] = useState(false);
-	const [teamPicking, setTeamPicking] = useState(teamDraftOrder[0][0]); // first round, first team 
+	const [teamPicking, setTeamPicking] = useState(teamDraftOrder[0][0]); // first round, first team
+	const [draftIndex, setDraftIndex] = useState(0);
 
 	// test log
 	useEffect(() => {
@@ -69,7 +64,9 @@ export default function Draft() {
 
 	// update teams + draft order
 	function handleSetTeams(teams: Team[]) {
-		// get curr team picking
+		setTeams(teams);
+
+		// set curr team picking
 		for(let round_i = 0; round_i < teamDraftOrder.length; round_i++) {
 			for(let team_i = 0; team_i < teamDraftOrder[round_i].length; team_i++) {
 				if(isCurrentTeamAndRound(round_i, team_i, draftIndex+1, 3)) {
@@ -78,8 +75,13 @@ export default function Draft() {
 				}
 			}
 		}
+
+		// if draft finished, post in db + route to new page
+		if(draftIndex+1 === teamDraftOrder.length-1) {
+			// some action...
+		}
+
 		setDraftIndex(draftIndex+1);
-		setTeams(teams);
 	}
 
   return (
