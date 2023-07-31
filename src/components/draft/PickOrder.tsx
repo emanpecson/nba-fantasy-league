@@ -1,4 +1,4 @@
-import Team from "@/models/Team";
+import Team from "@/models/DraftTeam";
 import isCurrentTeamAndRound from "@/lib/draft/isCurrentTeamAndRound";
 
 export default function PickOrder({

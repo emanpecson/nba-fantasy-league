@@ -1,6 +1,6 @@
 import Roster from "./Roster";
 
-export default class Team {
+export default class DraftTeam {
 	name: string;
 	roster: Roster;
 

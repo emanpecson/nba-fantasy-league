@@ -27,7 +27,7 @@ model League {
   teams Team[]
 
   // many-to-one User
-  userId String @unique @db.ObjectId
+  userId String @db.ObjectId
   user   User   @relation(fields: [userId], references: [id])
 }
 
@@ -35,14 +35,14 @@ model Team {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   isUser      Boolean
   name        String
-  wins        Int
-  gamesPlayed Int
+  wins        Int @default(0)
+  gamesPlayed Int @default(0)
 
   // one-to-many Players
   roster Player[]
 
   // many-to-one League
-  leagueId String @unique @db.ObjectId
+  leagueId String @db.ObjectId
   league   League @relation(fields: [leagueId], references: [id])
 }
 
@@ -51,11 +51,11 @@ model Player {
   isStarter Boolean
 
   // many-to-one Team
-  fantasyTeamId String @unique @db.ObjectId
+  fantasyTeamId String @db.ObjectId
   fantasyTeam   Team   @relation(fields: [fantasyTeamId], references: [id])
 
   // many-to-one Card
-  cardId String @unique @db.ObjectId
+  cardId String @db.ObjectId
   card   Card   @relation(fields: [cardId], references: [id])
 }
 

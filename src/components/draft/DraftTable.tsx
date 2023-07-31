@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import CardModal from './CardModal';
 import Roster from '@/models/Roster';
-import Team from '@/models/Team';
+import DraftTeam from '@/models/DraftTeam';
 
 export default function DraftTable({
   playerCards,
@@ -14,9 +14,9 @@ export default function DraftTable({
 }: {
   playerCards: Card[];
   isLoading: boolean;
-	teams: Team[];
-	setTeams: (teams: Team[]) => void;
-	teamPicking: Team;
+	teams: DraftTeam[];
+	setTeams: (teams: DraftTeam[]) => void;
+	teamPicking: DraftTeam;
 }) {
 	// card that the modal will display details for
   const [cardProfile, setCardProfile] = useState<Card | null>(null);
