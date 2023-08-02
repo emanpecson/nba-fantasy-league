@@ -11,27 +11,26 @@ export default function DraftTable({
 	teams,
 	setTeams,
 	teamPicking,
+	cardPicks,
+	setCardPicks,
 }: {
   playerCards: Card[];
   isLoading: boolean;
 	teams: DraftTeam[];
 	setTeams: (teams: DraftTeam[]) => void;
 	teamPicking: DraftTeam;
+	cardPicks: Card[];
+	setCardPicks: (cardPicks: Card[]) => void;
 }) {
 	// card that the modal will display details for
   const [cardProfile, setCardProfile] = useState<Card | null>(null);
   const [cardModalIsOpen, setCardModalIsOpen] = useState(false);
 
 	// update active roster to curr team picking
-	const [activeRoster, setActiveRoster] = useState<Roster | null>(null);
-	useEffect(() => {
-		for(const team of teams) {
-			if(team.name === teamPicking.name) {
-				console.log(`DraftTable.tsx: activeRoster = ${team.roster}`)
-				setActiveRoster(team.roster);
-			}
-		}
-	}, [teams])
+	const [activeRoster, setActiveRoster] = useState<Roster>(teamPicking.roster);
+	// useEffect(() => {
+	// 	setActiveRoster(teamPicking.roster);
+	// }, [teamPicking])
 
 	/*
 		when card modal updates the roster, this function will trigger
@@ -45,11 +44,12 @@ export default function DraftTable({
 		const teamsTemp = [...teams];
 
 		// set roster for team
-		for(const team of teams) {
-			if(team.name === teamPicking.name) {
-				team.setRoster(roster);
-			}
-		}
+		// for(const team of teams) {
+		// 	if(team.name === teamPicking.name) {
+		// 		team.setRoster(roster);
+		// 	}
+		// }
+		teamPicking.setRoster(roster);
 
 		// update teams back up to parent (draft/page.tsx)
 		setTeams(teamsTemp);
@@ -159,6 +159,8 @@ export default function DraftTable({
         setCardModalIsOpen={setCardModalIsOpen}
         roster={activeRoster}
         setRoster={setRosterForPickingTeam}
+				cardPicks={cardPicks}
+				setCardPicks={setCardPicks}
       />
     </div>
   );

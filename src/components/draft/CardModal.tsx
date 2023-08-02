@@ -10,19 +10,23 @@ export default function CardModal({
 	setCardModalIsOpen,
 	roster,
 	setRoster,
+	cardPicks,
+	setCardPicks,
 }: {
 	card: Card | null;
 	cardModalIsOpen: boolean;
 	setCardModalIsOpen: (flag: boolean) => void;
 	roster: Roster | null;
 	setRoster: (roster: Roster) => void;
+	cardPicks: Card[];
+	setCardPicks: (cardPicks: Card[]) => void;
 }) {
 	const [rosterModalIsOpen, setRosterModalIsOpen] = useState(false);
 
 	function addToRoster(isStarting: boolean, assignedPosition: string) {
 		if(card) {
 			// copy as new obj to trigger reactivity (avoid using same reference)
-			const rosterTemp: Roster = {...roster} as Roster;
+			const rosterTemp = {...roster} as Roster;
 
 			if(isStarting) {
 				rosterTemp.starters[assignedPosition as keyof typeof rosterTemp.starters] = card;
@@ -32,6 +36,9 @@ export default function CardModal({
 
 			setRoster(rosterTemp);
 			setRosterModalIsOpen(false);
+
+			const tempCardPicks: Card[] = [...cardPicks, card];
+			setCardPicks(tempCardPicks);
 		}
 	}
 

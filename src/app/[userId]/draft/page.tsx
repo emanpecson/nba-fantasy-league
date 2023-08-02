@@ -12,21 +12,36 @@ import PositionSelect from '@/components/draft/PositionSelect';
 import isCurrentTeamAndRound from '@/lib/draft/isCurrentTeamAndRound';
 import RouteButton from '@/components/RouteButton';
 import Modal from '@/components/Modal';
+import seedrandom from 'seedrandom';
+import Roster from '@/models/Roster';
 
 export default function Draft({ params }: { params: { userId: string } }) {
 	// displayed data
   const [playerCards, setPlayerCards] = useState<Card[]>([]);
-	const [myTeam, setMyTeam] = useState<DraftTeam>(new DraftTeam('MyTeam'));
+	const [cpuPlayerCards, setCpuPlayerCards] = useState<Card[]>([]);
+	const [myTeam, setMyTeam] = useState<DraftTeam>(new DraftTeam('MyTeam', true));
 	const [teams, setTeams] = useState<DraftTeam[]>([
-		new DraftTeam('Lakers'),
 		myTeam,
-		new DraftTeam('Heat'),
+		new DraftTeam('Warriors', false),
+		new DraftTeam('Wolves', false),
+		new DraftTeam('Lakers', false),
+		new DraftTeam('Heat', false),
+		new DraftTeam('Nuggets', false),
+		new DraftTeam('Blazers', false),
+		new DraftTeam('Pelicans', false),
 	]);
+	const [cardPicks, setCardPicks] = useState<Card[]>([]);
 
-	const teamDraftOrder: DraftTeam[][] = [];
+	const teamDraftOrder: DraftTeam[][] = [];	
 	for(let i = 0; i < 10; i++) {
+		const seed = `${i+100}`;
+		const rng = seedrandom(seed);
+		const comparator = () => { return rng() - 0.5 }
+
+		const reorderedTeams = [...teams].sort(comparator);
+
 		const round: Array<DraftTeam> = [];
-		for(const team of teams) {
+		for(const team of reorderedTeams) {
 			round.push(team);
 		}
 		teamDraftOrder.push(round);
@@ -44,32 +59,41 @@ export default function Draft({ params }: { params: { userId: string } }) {
 	const [leagueHomeRoute, setLeagueHomeRoute] = useState('');
 	const [isOpenWrapupModal, setIsOpenWrapupModal] = useState(false);
 	const [isLoadingWrapup, setIsLoadingWrapup] = useState(false);
+	const [totalPicks, setTotalPicks] = useState(80);
+	const [draftFinished, setDraftFinished] = useState(false);
 
-	// test log
-	useEffect(() => {
-		console.log('teams:', teams);
-	}, [teams]);
+	async function handleFilter() {
+		setIsLoadingTable(true);
+
+		const res = await fetch(
+			`/api/card?searchInput=${searchInput}&team=${teamFilter}&position=${positionFilter}`,
+			{ method: 'GET' }
+		);
+		const { cards } = await res.json();
+		console.log('filtered cards:', cards);
+		setPlayerCards(cards);
+
+		setIsLoadingTable(false);
+	};
+
+	async function getCpuPlayerCards() {
+		const res = await fetch(
+			'/api/card',
+			{ method: 'GET' }
+		);
+		const { cards } = await res.json();
+		setCpuPlayerCards(cards);
+	}
 
   useEffect(() => {
-    const handleFilter = async () => {
-      setIsLoadingTable(true);
-
-      const res = await fetch(
-        `/api/card?searchInput=${searchInput}&team=${teamFilter}&position=${positionFilter}`,
-        { method: 'GET' }
-      );
-      const { cards } = await res.json();
-      console.log('filtered cards:', cards);
-      setPlayerCards(cards);
-
-      setIsLoadingTable(false);
-    };
     handleFilter();
+		getCpuPlayerCards();
   }, [teamFilter, positionFilter, searchInput]);
 
 	// post in db + route to new page
 	async function finishDraft(teams: DraftTeam[]) {
 		console.log('draft finished');
+		setDraftFinished(true);
 		setIsOpenWrapupModal(true);
 
 		try {
@@ -92,6 +116,7 @@ export default function Draft({ params }: { params: { userId: string } }) {
 
 			// post all teams (w/ league id)
 			for(const team of teams) {
+				console.log('posting team:', team.name);
 				const res = await fetch('/api/team', {
 					method: 'POST',
 					body: JSON.stringify({
@@ -148,23 +173,103 @@ export default function Draft({ params }: { params: { userId: string } }) {
 		// set curr team picking
 		for(let round_i = 0; round_i < teamDraftOrder.length; round_i++) {
 			for(let team_i = 0; team_i < teamDraftOrder[round_i].length; team_i++) {
-				if(isCurrentTeamAndRound(round_i, team_i, draftIndex+1, 3)) {
+				if(isCurrentTeamAndRound(round_i, team_i, draftIndex+1, teams.length)) {
 					setTeamPicking(teamDraftOrder[round_i][team_i]);
 				}
 			}
 		}
 
-		if(draftIndex+1 === (teamDraftOrder.length * teamDraftOrder[0].length))
+		if(!draftFinished && draftIndex+1 === (teamDraftOrder.length * teamDraftOrder[0].length))
 			await finishDraft(teams);
 
 		setDraftIndex(draftIndex+1);
 	}
 
+	function isAvailableCard(card: Card) {
+		for(const team of teams) {
+			for(const rosterSpot of Object.values(team.roster.starters)) {
+				if(rosterSpot && rosterSpot.id === card.id)
+					return false;
+			}
+			for(const rosterSpot of Object.values(team.roster.bench)) {
+				if(rosterSpot && rosterSpot.id === card.id)
+					return false;
+			}
+		}
+		return true;
+	}
+
+	function getAvailableRosterSpot(roster: Roster, position: string) {
+		// check starters
+		if(!roster.starters.pg && position.includes('G')) return { isStarting: true, position: 'pg' };
+		if(!roster.starters.sg && position.includes('G')) return { isStarting: true, position: 'sg' };
+		if(!roster.starters.sf && position.includes('F')) return { isStarting: true, position: 'sf' };
+		if(!roster.starters.pf && position.includes('F')) return { isStarting: true, position: 'pf' };
+		if(!roster.starters.c && position.includes('C')) return { isStarting: true, position: 'c' };
+
+		// check bench
+		if(!roster.bench.pg && position.includes('G')) return { isStarting: false, position: 'pg' };
+		if(!roster.bench.sg && position.includes('G')) return { isStarting: false, position: 'sg' };
+		if(!roster.bench.sf && position.includes('F')) return { isStarting: false, position: 'sf' };
+		if(!roster.bench.pf && position.includes('F')) return { isStarting: false, position: 'pf' };
+		if(!roster.bench.c && position.includes('C')) return { isStarting: false, position: 'c' };
+		
+		// otherwise, no valid spot for this position
+		return null;
+	}
+
+	/*
+		if curr teamPicking is a cpu, automate process by auto-selecting next
+		best player option
+	*/
+	async function cpuSelect() {
+		const teamsTemp = [...teams];
+
+		for(const card of cpuPlayerCards) {
+			const availableRosterSpot = getAvailableRosterSpot(teamPicking.roster, card.position);
+			if(isAvailableCard(card) && availableRosterSpot) {
+				const rosterTemp = {...teamPicking.roster} as Roster;
+
+				if(availableRosterSpot.isStarting) {
+					rosterTemp.starters[availableRosterSpot.position as keyof typeof rosterTemp.starters] = card;
+				} else {
+					rosterTemp.bench[availableRosterSpot.position as keyof typeof rosterTemp.bench] = card;
+				}
+
+				console.log(`${teamPicking.name} picked ${card.name}`);
+
+				teamPicking.setRoster(rosterTemp);
+
+				const tempCardPicks = [...cardPicks, card];
+				setCardPicks(tempCardPicks);
+
+				break;
+			}
+		}
+
+		// after roster set, set team
+		handleSetTeams(teamsTemp);
+	}
+
+	useEffect(() => {
+		if(!teamPicking.isUser) {
+			setTimeout(() => {
+				cpuSelect();
+			}, 500);
+		}
+	}, [teams])
+
   return (
     <div>
       <div className="flex flex-row">
         <div className="basis-1/5 pt-2 pl-3">
-					<PickOrder teamDraftOrder={teamDraftOrder} draftIndex={draftIndex} />
+					<PickOrder 
+						teamDraftOrder={teamDraftOrder}
+						draftIndex={draftIndex}
+						cardPicks={cardPicks}
+						totalPicks={totalPicks}
+						teams={teams}
+					/>
 				</div>
 
         <div className="basis-4/5 px-3">
@@ -187,6 +292,8 @@ export default function Draft({ params }: { params: { userId: string } }) {
 							teams={teams}
 							setTeams={handleSetTeams}
 							teamPicking={teamPicking}
+							cardPicks={cardPicks}
+							setCardPicks={setCardPicks}
 						/>
 					</div>
 
