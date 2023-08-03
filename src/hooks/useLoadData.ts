@@ -7,7 +7,7 @@ export default async function useLoadData(onDataLoaded: (data: any) => void, api
     const fetchData = async () => {
       try {
         const res = await fetch(apiEndpoint, { method: 'GET' });
-        const data = await res.json();
+        const { data } = await res.json();
         onDataLoaded(data)
       } catch (err) {
         console.error('Client error:', err);
