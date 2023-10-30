@@ -32,7 +32,7 @@ export default function Modal({ isOpen, onClose, children }: { isOpen: boolean, 
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-							<button type="button" className="hover:bg-gray-100" onClick={onClose} ref={cancelButtonRef}>
+							<button type="button" className="hover:bg-gray-200 rounded-full p-1" onClick={onClose} ref={cancelButtonRef}>
 								<XMarkIcon className="h-6 w-6" />
 							</button>
                 <div>
