@@ -2,31 +2,28 @@
 
 import RouteButton from '@/components/RouteButton';
 import LoginPrompt from '@/components/auth/LoginPrompt';
-import { verifyUser } from '@/lib/user/verifyUser';
+import { verifyUser } from '@/util/user/verifyUser';
 import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 
 export default function Login() {
-	const router = useRouter();
+  const router = useRouter();
 
-	async function handleLogin(user: User) {
-		const id = await verifyUser(user);
+  async function handleLogin(user: User) {
+    const id = await verifyUser(user);
 
-		if(id) {
-			console.log('Logging in...');
-			router.push(`/${id}/menu`);
-		}
-		else {
-			console.log('Invalid credentials');
-		}
-	}
+    if (id) {
+      console.log('Logging in...');
+      router.push(`/${id}/menu`);
+    } else {
+      console.log('Invalid credentials');
+    }
+  }
 
-	return(
-		<div>
-			<LoginPrompt handleLogin={handleLogin} />
-			<RouteButton route={'/'}>
-				Cancel
-			</RouteButton>
-		</div>
-	)
+  return (
+    <div>
+      <LoginPrompt handleLogin={handleLogin} />
+      <RouteButton route={'/'}>Cancel</RouteButton>
+    </div>
+  );
 }
