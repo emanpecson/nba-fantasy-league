@@ -1,18 +1,30 @@
-'use client'
+'use client';
 
-import { useEffect } from "react";
+import { useEffect, useState } from 'react';
 
-export default async function useLoadData(onDataLoaded: (data: any) => void, apiEndpoint: string) {
+export default function useLoadData(
+  apiEndpoint: string,
+  dataVar: string = 'data',
+  isLoadingVar: string = 'isLoading'
+) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const res = await fetch(apiEndpoint, { method: 'GET' });
         const { data } = await res.json();
-        onDataLoaded(data)
+        setData(data);
       } catch (err) {
         console.error('Client error:', err);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
     fetchData();
   }, []);
+
+  return { [dataVar]: data, [isLoadingVar]: isLoading } as any;
 }
