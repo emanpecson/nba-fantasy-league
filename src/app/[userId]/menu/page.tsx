@@ -1,35 +1,53 @@
 'use client';
 
 import Modal from '@/components/Modal';
-import LoadLeague from "./loadLeague/page";
-import NewLeague from "./newLeague/page";
-import { useState } from "react";
+import LoadLeague from './loadLeague/page';
+import NewLeague from './newLeague/page';
+import { useState } from 'react';
 
-export default function Menu() {
-	const [isOpenNL, setIsOpenNL] = useState(false);
-	const [isOpenLL, setIsOpenLL] = useState(false);
+export default function Menu({ params }: { params: { userId: string } }) {
+  const [isOpenNewLeague, setIsOpenNewLeague] = useState(false);
+  const [isOpenLoadLeague, setIsOpenLoadLeague] = useState(false);
 
-	return (
-		<div>
-			<div>
-				<button onClick={() => {setIsOpenLL(true) }}>
-					Open Load League
-				</button>
+  return (
+    <div>
+      <div>
+        <button
+          onClick={() => {
+            setIsOpenLoadLeague(true);
+          }}>
+          Load League
+        </button>
 
-				<Modal isOpen={isOpenLL} onClose={() => { setIsOpenLL(false) }}>
-					<LoadLeague />
-				</Modal>
-			</div>
+        <Modal
+          isOpen={isOpenLoadLeague}
+          onClose={() => {
+            setIsOpenLoadLeague(false);
+          }}>
+          <LoadLeague
+            params={{
+              userId: params.userId,
+            }}
+          />
+        </Modal>
+      </div>
 
-			<div>
-				<button onClick={() => {setIsOpenNL(true) }}>
-					Open New League 
-				</button>
+      <div>
+        <button
+          onClick={() => {
+            setIsOpenNewLeague(true);
+          }}>
+          New League
+        </button>
 
-				<Modal isOpen={isOpenNL} onClose={() => {setIsOpenNL(false) }}>
-					<NewLeague />
-				</Modal>
-			</div>
-		</div>
-	);
+        <Modal
+          isOpen={isOpenNewLeague}
+          onClose={() => {
+            setIsOpenNewLeague(false);
+          }}>
+          <NewLeague />
+        </Modal>
+      </div>
+    </div>
+  );
 }
