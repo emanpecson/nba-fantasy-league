@@ -45,7 +45,7 @@ export default function Menu({ params }: { params: { userId: string } }) {
           onClose={() => {
             setIsOpenNewLeague(false);
           }}>
-          <NewLeague />
+          <NewLeague params={{ userId: params.userId }} />
         </Modal>
       </div>
     </div>

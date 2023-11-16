@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, League, Player, Team } from '@prisma/client';
+import { useParams } from 'next/navigation';
 import DraftTeam from '@/models/DraftTeam';
 import PickOrder from '@/components/draft/PickOrder';
 import DraftTable from '@/components/draft/DraftTable';
@@ -14,23 +15,90 @@ import RouteButton from '@/components/RouteButton';
 import Modal from '@/components/Modal';
 import seedrandom from 'seedrandom';
 import Roster from '@/models/Roster';
+import useLoadData from '@/hooks/useLoadData';
 
-export default function Draft({ params }: { params: { userId: string } }) {
+export default function Draft() {
+  const params = useParams();
+
   // displayed data
   const [playerCards, setPlayerCards] = useState<Card[]>([]);
   const [cpuPlayerCards, setCpuPlayerCards] = useState<Card[]>([]);
-  const [myTeam, setMyTeam] = useState<DraftTeam>(new DraftTeam('MyTeam', true));
-  const [teams, setTeams] = useState<DraftTeam[]>([
-    myTeam,
-    new DraftTeam('Warriors', false),
-    new DraftTeam('Wolves', false),
-    new DraftTeam('Lakers', false),
-    new DraftTeam('Heat', false),
-    new DraftTeam('Nuggets', false),
-    new DraftTeam('Blazers', false),
-    new DraftTeam('Pelicans', false),
-  ]);
+  const [teams, setTeams] = useState<DraftTeam[]>([]);
   const [cardPicks, setCardPicks] = useState<Card[]>([]);
+  const [userDraftTeam, setUserDraftTeam] = useState<DraftTeam>();
+  const [userTeam, setUserTeam] = useState<Team | null>(null);
+
+  // get user's team
+  // const { userTeam, isLoadingUserTeam } = useLoadData(
+  //   `/api/team?userId=${params.userId}&leagueId=${params.leagueId}`,
+  //   'userTeam',
+  //   'isLoadingUserTeam'
+  // );
+
+  const [teamDraftOrder, setTeamDraftOrder] = useState<DraftTeam[][]>([]);
+
+  useEffect(() => {
+    console.log('useEffect: fetch user team');
+    const fetchUserTeam = async () => {
+      try {
+        const res = await fetch(`/api/team?userId=${params.userId}&leagueId=${params.leagueId}`, {
+          method: 'GET',
+        });
+        const { data } = await res.json();
+        setUserTeam(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserTeam();
+  }, [params.userId, params.leagueId]);
+
+  // ^ this load SHOULD trigger the bottom useEffect
+
+  useEffect(() => {
+    console.log('useEffect: setup draft order');
+    if (userTeam) {
+      const tempUserDraftTeam = new DraftTeam(userTeam.name, true);
+      const tempTeams = [
+        tempUserDraftTeam,
+        new DraftTeam('Warriors', false),
+        new DraftTeam('Wolves', false),
+        new DraftTeam('Lakers', false),
+        new DraftTeam('Heat', false),
+        new DraftTeam('Nuggets', false),
+        new DraftTeam('Blazers', false),
+        new DraftTeam('Pelicans', false),
+      ];
+
+      setTeams(tempTeams);
+
+      setUserDraftTeam(tempUserDraftTeam);
+
+      // set team draft order
+      const tempTeamDraftOrder: DraftTeam[][] = [];
+      for (let i = 0; i < 10; i++) {
+        const seed = `${i + 100}`;
+        const rng = seedrandom(seed);
+        const comparator = () => {
+          return rng() - 0.5;
+        };
+
+        const reorderedTeams = [...tempTeams].sort(comparator);
+
+        const round: DraftTeam[] = [];
+        for (const team of reorderedTeams) {
+          round.push(team);
+        }
+        tempTeamDraftOrder.push(round);
+      }
+
+      setTeamDraftOrder(tempTeamDraftOrder);
+      setTeamPicking(tempTeamDraftOrder[0][0]);
+
+      // test logs
+      console.log('team draft order:', tempTeamDraftOrder);
+    }
+  }, [userTeam]);
 
   let count = 0;
   const [loadedPlayersCount, setLoadedPlayersCount] = useState(count);
@@ -40,23 +108,6 @@ export default function Draft({ params }: { params: { userId: string } }) {
   }, [count]);
   const totalPlayersToLoad = teams.length * 10; // each team has 10 players
 
-  const teamDraftOrder: DraftTeam[][] = [];
-  for (let i = 0; i < 10; i++) {
-    const seed = `${i + 100}`;
-    const rng = seedrandom(seed);
-    const comparator = () => {
-      return rng() - 0.5;
-    };
-
-    const reorderedTeams = [...teams].sort(comparator);
-
-    const round: Array<DraftTeam> = [];
-    for (const team of reorderedTeams) {
-      round.push(team);
-    }
-    teamDraftOrder.push(round);
-  }
-
   // filters
   const [searchInput, setSearchInput] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
@@ -64,7 +115,7 @@ export default function Draft({ params }: { params: { userId: string } }) {
 
   // states
   const [isLoadingTable, setIsLoadingTable] = useState(false);
-  const [teamPicking, setTeamPicking] = useState(teamDraftOrder[0][0]); // first round, first team
+  const [teamPicking, setTeamPicking] = useState<DraftTeam>(); // first round, first team
   const [draftIndex, setDraftIndex] = useState(0);
   const [leagueHomeRoute, setLeagueHomeRoute] = useState('');
   const [isOpenWrapupModal, setIsOpenWrapupModal] = useState(false);
@@ -97,84 +148,91 @@ export default function Draft({ params }: { params: { userId: string } }) {
     getCpuPlayerCards();
   }, [teamFilter, positionFilter, searchInput]);
 
+  /*
+		todo:
+			we gotta update the post to instead be a 'PUT'
+			on the existing params.leagueId
+	*/
+
   // post in db + route to new page
   async function finishDraft(teams: DraftTeam[]) {
     console.log('draft finished');
     setDraftFinished(true);
     setIsOpenWrapupModal(true);
+    setIsLoadingWrapup(true);
 
     try {
-      setIsLoadingWrapup(true);
+      const postPlayer = async (card: Card, isStarter: boolean, team: Team) => {
+        const res = await fetch('/api/player', {
+          method: 'POST',
+          body: JSON.stringify({
+            isStarter,
+            fantasyTeamId: team.id,
+            cardId: card?.id,
+          } as Player),
+        });
+        const { data } = await res.json();
+        const createdPlayer: Player = data;
 
-      // post new league (w/ user id)
-      const res = await fetch('/api/league', {
-        method: 'POST',
-        body: JSON.stringify({
-          name: 'tempName',
-          mode: 'tempMode',
-          userId: params.userId,
-        } as League),
-      });
-      const { data } = await res.json();
-      const createdLeague: League = data;
+        if (!createdPlayer) throw Error(`Unable to post player: ${card?.name}`);
 
-      if (!createdLeague) throw Error('Unable to post league');
+        // const count = loadedPlayersCount;
+        // setLoadedPlayersCount(count+1);
+        count++;
+      };
 
       // post all teams (w/ league id)
       for (const team of teams) {
-        console.log('posting team:', team.name);
-        const res = await fetch('/api/team', {
-          method: 'POST',
-          body: JSON.stringify({
-            isUser: team.name === 'MyRoster' ? true : false,
-            name: team.name,
-            leagueId: createdLeague.id,
-          } as Team),
-        });
-        const { data } = await res.json();
-        const createdTeam: Team = data;
+        // post players for user team
+        if (team.isUser) {
+          console.log('posting user team:', team.name);
 
-        if (!createdTeam) throw Error(`Unable to post team: ${team.name}`);
+          for (const rosterSpot of Object.values(team.roster.starters)) {
+            await postPlayer(rosterSpot as Card, true, userTeam as Team);
+          }
+          for (const rosterSpot of Object.values(team.roster.bench)) {
+            await postPlayer(rosterSpot as Card, false, userTeam as Team);
+          }
+        }
 
-        const postPlayer = async (card: Card, isStarter: boolean) => {
-          const res = await fetch('/api/player', {
+        // post cpu teams + players
+        else {
+          console.log('posting cpu team:', team.name);
+
+          const res = await fetch('/api/team', {
             method: 'POST',
             body: JSON.stringify({
-              isStarter,
-              fantasyTeamId: createdTeam.id,
-              cardId: card?.id,
-            } as Player),
+              userId: null,
+              name: team.name,
+              leagueId: params.leagueId,
+            } as Team),
           });
           const { data } = await res.json();
-          const createdPlayer: Player = data;
+          const cpuTeam: Team = data;
 
-          if (!createdPlayer) throw Error(`Unable to post player: ${card?.name}`);
+          if (!cpuTeam) throw Error(`Unable to post team: ${team.name}`);
 
-          // const count = loadedPlayersCount;
-          // setLoadedPlayersCount(count+1);
-          count++;
-        };
-
-        // post all players (associated w/ team + card)
-        for (const rosterSpot of Object.values(team.roster.starters)) {
-          await postPlayer(rosterSpot as Card, true);
-        }
-        for (const rosterSpot of Object.values(team.roster.bench)) {
-          await postPlayer(rosterSpot as Card, false);
+          // post all players (associated w/ team + card)
+          for (const rosterSpot of Object.values(team.roster.starters)) {
+            await postPlayer(rosterSpot as Card, true, cpuTeam);
+          }
+          for (const rosterSpot of Object.values(team.roster.bench)) {
+            await postPlayer(rosterSpot as Card, false, cpuTeam);
+          }
         }
       }
 
       // route to league home page
-      setLeagueHomeRoute(`${params.userId}/${createdLeague.id}/home`);
-
-      setIsLoadingWrapup(false);
+      setLeagueHomeRoute(`${params.userId}/${params.leagueId}/home`);
     } catch (error) {
       console.error(error);
     }
+    setIsLoadingWrapup(false);
   }
 
   // update teams + draft order
   async function handleSetTeams(teams: DraftTeam[]) {
+    console.log('setting teams:', teams);
     setTeams(teams);
 
     // set curr team picking
@@ -186,7 +244,7 @@ export default function Draft({ params }: { params: { userId: string } }) {
       }
     }
 
-    if (!draftFinished && draftIndex + 1 === teamDraftOrder.length * teamDraftOrder[0].length)
+    if (!draftFinished && draftIndex + 1 >= teamDraftOrder.length * teamDraftOrder[0].length)
       await finishDraft(teams);
 
     setDraftIndex(draftIndex + 1);
@@ -227,7 +285,7 @@ export default function Draft({ params }: { params: { userId: string } }) {
 		if curr teamPicking is a cpu, automate process by auto-selecting next
 		best player option
 	*/
-  async function cpuSelect() {
+  async function cpuSelect(teamPicking: DraftTeam) {
     const teamsTemp = [...teams];
 
     for (const card of cpuPlayerCards) {
@@ -258,56 +316,57 @@ export default function Draft({ params }: { params: { userId: string } }) {
   }
 
   useEffect(() => {
-    if (!teamPicking.isUser) {
+    if (teamPicking && !teamPicking.isUser && !draftFinished) {
       setTimeout(() => {
-        cpuSelect();
+        cpuSelect(teamPicking);
       }, 500);
     }
   }, [teams]);
 
   return (
     <div>
-      <div className="flex flex-row">
-        <div className="basis-1/5 pt-2 pl-3">
-          <PickOrder
-            teamDraftOrder={teamDraftOrder}
-            draftIndex={draftIndex}
-            cardPicks={cardPicks}
-            totalPicks={totalPicks}
-            teams={teams}
-          />
-        </div>
-
-        <div className="basis-4/5 px-3">
-          <div className="flex flex-row space-x-1.5">
-            <div className="basis-3/5">
-              <DraftSearch setSearchInput={setSearchInput} />
-            </div>
-            <div className="basis-1/5">
-              <TeamCombobox setTeam={setTeamFilter} />
-            </div>
-            <div className="basis-1/5">
-              <PositionSelect setPosition={setPositionFilter} />
-            </div>
-          </div>
-
-          <div>
-            <DraftTable
-              playerCards={playerCards}
-              isLoading={isLoadingTable}
-              teams={teams}
-              setTeams={handleSetTeams}
-              teamPicking={teamPicking}
+      {userTeam && teamPicking && (
+        <div className="flex flex-row">
+          <div className="basis-1/5 pt-2 pl-3">
+            <PickOrder
+              teamDraftOrder={teamDraftOrder}
+              draftIndex={draftIndex}
               cardPicks={cardPicks}
-              setCardPicks={setCardPicks}
+              totalPicks={totalPicks}
+              teams={teams}
             />
           </div>
 
-          <div>
-            <RosterView roster={myTeam.roster} />
+          <div className="basis-4/5 px-3">
+            <div className="flex flex-row space-x-1.5">
+              <div className="basis-3/5">
+                <DraftSearch setSearchInput={setSearchInput} />
+              </div>
+              <div className="basis-1/5">
+                <TeamCombobox setTeam={setTeamFilter} />
+              </div>
+              <div className="basis-1/5">
+                <PositionSelect setPosition={setPositionFilter} />
+              </div>
+            </div>
+
+            <div>
+              <DraftTable
+                playerCards={playerCards}
+                isLoading={isLoadingTable}
+                teams={teams}
+                setTeams={handleSetTeams}
+                teamPicking={teamPicking}
+                cardPicks={cardPicks}
+                setCardPicks={setCardPicks}
+              />
+            </div>
+
+            <div>{userDraftTeam && <RosterView roster={userDraftTeam.roster} />}</div>
           </div>
         </div>
-      </div>
+      )}
+      {(!userTeam || !teamPicking) && <p>Loading user team</p>}
       <Modal
         isOpen={isOpenWrapupModal}
         onClose={() => {
