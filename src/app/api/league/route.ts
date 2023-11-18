@@ -23,6 +23,13 @@ export async function GET(req: NextRequest) {
         where: {
           userId: String(query.userId),
         },
+        include: {
+          teams: {
+            where: {
+              userId: String(query.userId),
+            },
+          },
+        },
       });
 
       return NextResponse.json({ data }, { status: 200 });
