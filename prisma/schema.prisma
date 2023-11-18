@@ -17,14 +17,15 @@ model User {
   // one-to-many Leagues
   leagues League[]
 
-	// one-to-many teams
-  Team    Team[]
+  // one-to-many teams
+  teams Team[]
 }
 
 model League {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  mode String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  mode      String
+  createdAt DateTime @default(now())
 
   // one-to-many Teams
   teams Team[]
