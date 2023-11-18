@@ -36,6 +36,7 @@ export default function PickOrder({
         {teamDraftOrder[round_i].map((team: Team, team_i: number) => (
           // highlight if it is the curr team picking
           <li
+            key={`${round_i}-${team_i}`}
             className={classNames(
               'p-4 flex justify-between',
               isCurrentTeamAndRound(round_i, team_i, draftIndex, teams.length)
