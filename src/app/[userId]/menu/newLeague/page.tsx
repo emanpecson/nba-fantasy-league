@@ -63,7 +63,8 @@ export default function NewLeague({ params }: { params: { userId: string } }) {
   }
 
   return (
-    <div>
+    <div className="px-6 pb-6">
+      <div className="text-xl font-medium pb-12">Create a new league</div>
       {/* <p>Select Mode</p>
 				<div>
         <button
@@ -89,7 +90,7 @@ export default function NewLeague({ params }: { params: { userId: string } }) {
           handleButton(data);
         })}>
         <div className="pb-4">
-          <label htmlFor="leagueName" className="flex pl-2.5 pb-1 text-md">
+          <label htmlFor="leagueName" className="flex pl-2 pb-1.5 font-medium">
             League name
           </label>
           <input
@@ -101,7 +102,7 @@ export default function NewLeague({ params }: { params: { userId: string } }) {
           />
         </div>
         <div className="pb-4">
-          <label htmlFor="leagueName" className="flex pl-2.5 pb-1 text-md">
+          <label htmlFor="leagueName" className="flex pl-2 pb-1.5 font-medium">
             Team name
           </label>
           <input
@@ -112,10 +113,10 @@ export default function NewLeague({ params }: { params: { userId: string } }) {
             {...register('teamName', { required: true, minLength: 8, maxLength: 64 })}
           />
         </div>
-        <div className="pb-4">
+        <div className="pb-10">
           <fieldset>
-            <label className="flex pl-2.5 pb-1 text-md">Select mode</label>
-            <div className="flex space-x-3">
+            <label className="flex pl-2 pb-1.5 font-medium">Select mode</label>
+            <div className="flex space-x-3 pl-1">
               <div className="flex space-x-1 place-items-center">
                 <input
                   type="radio"
@@ -140,9 +141,9 @@ export default function NewLeague({ params }: { params: { userId: string } }) {
         </div>
 
         <button
-          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold text-sm py-2 px-4 border border-gray-300 rounded-md shadow-md"
+          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold text-sm py-2.5 px-4 border border-gray-300 rounded-md shadow-md"
           type="submit">
-          Submit
+          Start New League
         </button>
       </form>
 
