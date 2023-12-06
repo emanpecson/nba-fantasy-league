@@ -45,11 +45,7 @@ export default function Modal({
                   ref={cancelButtonRef}>
                   <XMarkIcon className="h-6 w-6" />
                 </button>
-                <div>
-                  <div className="mt-3 text-center sm:mt-5">
-                    <div className="mt-2">{children}</div>
-                  </div>
-                </div>
+                <div>{children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
